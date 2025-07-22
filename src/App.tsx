@@ -7,6 +7,7 @@ import { useAppSelector } from "./app/hooks";
 import { useGetUserQuery } from "./features/api/eshopApi";
 import Login from "./features/auth/Login";
 import Register from "./features/auth/Register";
+import { ToastContainer } from "react-toastify";
 
 function AppContent() {
   const token = useAppSelector((state) => state.auth.token);
@@ -17,7 +18,7 @@ function AppContent() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
       </div>
     );
   }
@@ -28,6 +29,7 @@ function AppContent() {
         <Route path="/register" element={<Register />} />
         <Route path="*" element={<ProtectedRoutes />} />
       </Routes>
+      <ToastContainer />
     </Router>
   );
 }

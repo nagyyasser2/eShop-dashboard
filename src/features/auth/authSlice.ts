@@ -59,7 +59,6 @@ const authSlice = createSlice({
       .addMatcher(
         eshopApi.endpoints.getUser.matchFulfilled,
         (state, action: any) => {
-          console.log("User fetched successfully:", action.payload);
           state.isLoading = false;
           state.user = action.payload.data;
           state.isAuthenticated = true;

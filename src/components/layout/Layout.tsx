@@ -5,7 +5,7 @@ import ShowMenuIcon from "../ui/ShowMenuIcon";
 import { useAppSelector } from "../../app/hooks";
 
 const Layout: React.FC = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useAppSelector((state) => state.auth);
 
   const toggleSidebar = () => {
@@ -28,14 +28,14 @@ const Layout: React.FC = () => {
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden max-h-screen">
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-3 md:p-6 bg-gray-50">
+        <main className="flex-1 overflow-y-auto p-3">
           <ShowMenuIcon
             toggleSidebar={toggleSidebar}
             sidebarOpen={sidebarOpen}
           />
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-8xl mx-auto mb-6 ">
             <Outlet />
           </div>
         </main>

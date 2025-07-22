@@ -4,11 +4,12 @@ import {
   ShoppingBagIcon,
   UsersIcon,
   CogIcon,
-  XMarkIcon,
   TagIcon,
   TicketIcon,
   ShieldCheckIcon,
   CreditCardIcon,
+  FlagIcon,
+  PercentBadgeIcon,
 } from "@heroicons/react/24/outline";
 import type { User } from "../../types";
 import UserProfile from "../ui/UserProfile";
@@ -43,6 +44,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
       icon: TicketIcon,
       roles: ["admin", "manager"],
       iconColor: "text-orange-600",
+    },
+    {
+      name: "Banners",
+      path: "/banners",
+      icon: FlagIcon,
+      roles: ["admin", "manager"],
+      iconColor: "text-yellow-600",
+    },
+    {
+      name: "Discounts",
+      path: "/discounts",
+      icon: PercentBadgeIcon,
+      roles: ["admin", "manager"],
+      iconColor: "text-green-600",
     },
     {
       name: "Orders",
@@ -85,7 +100,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
     <div
       className={`${
         isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-      } fixed md:static inset-y-0 left-0 z-30 w-64 bg-zinc-50 shadow-lg transition-transform duration-200 ease-in-out border-r-1 border-zinc-900 md:translate-x-0`}
+      } fixed md:static inset-y-0 left-0 z-30 w-64 bg-zinc-50 shadow-lg transition-transform duration-200 ease-in-out shadow-md shadow-green-900/20`}
     >
       <div className="flex flex-col h-full">
         {/* Sidebar Header */}
@@ -108,15 +123,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
                   <Link
                     to={item.path}
                     className={`flex items-center px-4 py-3 rounded-lg ${
-                      location.pathname === item.path
-                        ? "bg-indigo-50 text-indigo-600"
+                      location.pathname.startsWith(item.path)
+                        ? "bg-green-50 text-green-600"
                         : "text-gray-700 hover:bg-gray-100"
                     }`}
                   >
                     <item.icon
                       className={`h-5 w-5 mr-3 ${
-                        location.pathname === item.path
-                          ? "text-indigo-600"
+                        location.pathname.startsWith(item.path)
+                          ? "text-green-600"
                           : item.iconColor
                       }`}
                     />

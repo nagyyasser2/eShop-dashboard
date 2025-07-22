@@ -28,7 +28,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
   }
 
   return (
-    <div className="flex items-center justify-between gap-4 bg-white shadow-md rounded-lg border border-gray-200 p-4">
+    <div className="flex items-center justify-between gap-4 p-4">
       <div className="flex items-center gap-3">
         <div className="flex-shrink-0">
           <img
@@ -50,7 +50,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
       <button
         onClick={handleLogout}
         disabled={isLoading}
-        className={`p-2 cursor-pointer outline-none text-gray-700 hover:text-red-600  focus:ring-red-500 ${
+        className={`p-2 cursor-pointer outline-none text-gray-700 focus:ring-red-500 ${
           isLoading ? "opacity-50 cursor-not-allowed" : ""
         }`}
         title="Log out"

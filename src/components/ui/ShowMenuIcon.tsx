@@ -14,7 +14,7 @@ const ShowMenuIcon: React.FC<ShowMenuIconProps> = ({
   return (
     <button
       onClick={toggleSidebar}
-      className="md:hidden block top-4 left-4 z-50 p-2 pl-6 rounded-md bg-white text-gray-800 hover:bg-gray-100 transition-colors duration-200"
+      className="md:hidden block top-4 z-50 p-1 mb-2 ml-3 cursor-pointer rounded-md bg-white text-gray-800 hover:bg-gray-100 transition-colors duration-200"
       aria-label="Open sidebar"
     >
       <svg

@@ -29,6 +29,31 @@ export interface Product {
   updatedAt: string;
 }
 
+export interface Category {
+  id: number;
+  name: string;
+  description?: string;
+  imageUrls: string[];
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+  products: any[]; // Adjust type based on your Product interface if available
+  subCategories: any[]; // Adjust type based on your SubCategory interface if available
+}
+
+export interface SubCategory {
+  id: number;
+  name: string;
+  description?: string;
+  imageUrls: string[];
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+  categoryId: number;
+  category?: Category;
+  products: any[]; // Adjust type based on your Product interface if available
+}
+
 export interface Order {
   id: string;
   customerId: string;
