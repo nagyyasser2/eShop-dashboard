@@ -39,18 +39,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
       iconColor: "text-teal-600",
     },
     {
-      name: "Coupons",
-      path: "/coupons",
-      icon: TicketIcon,
-      roles: ["admin", "manager"],
-      iconColor: "text-orange-600",
-    },
-    {
       name: "Banners",
       path: "/banners",
       icon: FlagIcon,
       roles: ["admin", "manager"],
       iconColor: "text-yellow-600",
+    },
+    {
+      name: "Coupons",
+      path: "/coupons",
+      icon: TicketIcon,
+      roles: ["admin", "manager"],
+      iconColor: "text-orange-600",
     },
     {
       name: "Discounts",
@@ -104,16 +104,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
     >
       <div className="flex flex-col h-full">
         {/* Sidebar Header */}
-        <div className="relative flex items-center justify-between px-4 py-5 pt-10 gap-1">
+        <div className="relative flex items-center justify-between px-4 py-5 pt-10">
           <Link
             to="/"
-            className="absolute left-1/2 transform -translate-x-1/2 text-2xl font-bold underline"
+            className="absolute left-1/2 -translate-x-1/2 transform text-3xl font-extrabold tracking-wide text-gray-800 hover:underline"
             onClick={toggleSidebar}
           >
-            eShop
+            Jumia
           </Link>
         </div>
-
         {/* Sidebar Content */}
         <div className="flex-1 overflow-y-auto">
           <nav className="px-4 py-6">

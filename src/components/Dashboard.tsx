@@ -1,4 +1,4 @@
-import { useGetDashboardStatsQuery } from "../features/api/eshopApi";
+import { useGetDashboardStatsQuery } from "../app/api/eshopApi";
 import {
   ArrowTrendingUpIcon,
   CurrencyDollarIcon,

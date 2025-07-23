@@ -1,14 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import { authApi } from "../features/api/authApi";
-import { productsApi } from "../features/api/productsApi";
-import { ordersApi } from "../features/api/ordersApi";
-import { customersApi } from "../features/api/customersApi";
-import { dashboardApi } from "../features/api/dashboardApi";
+import { authApi } from "./api/authApi";
+import { productsApi } from "./api/productsApi";
+import { ordersApi } from "./api/ordersApi";
+import { customersApi } from "./api/customersApi";
+import { dashboardApi } from "./api/dashboardApi";
 import authReducer from "../features/auth/authSlice";
 import productsReducer from "../features/products/productsSlice";
-import { eshopApi } from "../features/api/eshopApi";
-import { categoriesApi } from "../features/api/categoriesApi";
+import { eshopApi } from "./api/eshopApi";
+import { categoriesApi } from "./api/categoriesApi";
+import { bannersApi } from "./api/bannersApi";
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
     [customersApi.reducerPath]: customersApi.reducer,
     [dashboardApi.reducerPath]: dashboardApi.reducer,
     [categoriesApi.reducerPath]: categoriesApi.reducer,
+    [bannersApi.reducerPath]: bannersApi.reducer,
     auth: authReducer,
     products: productsReducer,
   },
@@ -31,6 +33,7 @@ export const store = configureStore({
       customersApi.middleware,
       dashboardApi.middleware,
       categoriesApi.middleware,
+      bannersApi.middleware,
     ]),
   devTools: process.env.NODE_ENV !== "production",
 });

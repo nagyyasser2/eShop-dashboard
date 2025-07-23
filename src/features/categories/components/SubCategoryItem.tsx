@@ -1,5 +1,5 @@
 import React from "react";
-import { useDeleteCategoryMutation } from "../../api/categoriesApi";
+import { useDeleteCategoryMutation } from "../../../app/api/categoriesApi";
 import { toast } from "react-toastify";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
@@ -21,7 +21,7 @@ const SubCategoryItem: React.FC<SubCategoryItemProps> = ({
 
   const handleDelete = async () => {
     const confirmed = window.confirm(
-      `Are you sure you want to delete "${name}" and all its contents? This action cannot be undone.`
+      `Are you sure you want to delete "${name}" ? This action cannot be undone.`
     );
     if (!confirmed) return;
 

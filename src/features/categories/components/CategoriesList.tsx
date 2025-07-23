@@ -5,7 +5,7 @@ import {
   useDeleteCategoryMutation,
   type CategoryTreeDto,
   type CategoryDto,
-} from "../../api/categoriesApi";
+} from "../../../app/api/categoriesApi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -18,7 +18,7 @@ const flattenCategories = (
     const categoryDto: CategoryDto = {
       id: category.id,
       name: category.name,
-      description: undefined, // Not included in CategoryTreeDto
+      description: category.description || "", // Not included in CategoryTreeDto
       imageUrls: [], // Not included in CategoryTreeDto
       isActive: category.isActive,
       sortOrder: category.sortOrder,
@@ -29,7 +29,7 @@ const flattenCategories = (
         ? category.children.map((child) => ({
             id: child.id,
             name: child.name,
-            description: undefined,
+            description: child.description || "",
             imageUrls: [],
             isActive: child.isActive,
             sortOrder: child.sortOrder,
@@ -52,7 +52,7 @@ const flattenCategories = (
   }, []);
 };
 
-const CategoriesList: React.FC = () => {
+const CategoriesList = ({ openModal }: { openModal: () => void }) => {
   const { data: categoryTree, isLoading, error } = useGetCategoriesTreeQuery();
 
   const [deleteCategory, { isLoading: isDeleting }] =
@@ -99,6 +99,21 @@ const CategoriesList: React.FC = () => {
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-semibold text-gray-700">Categories</h2>
+          <p className="text-sm text-gray-500">
+            View and manage categories here.
+          </p>
+        </div>
+        <button
+          onClick={openModal}
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200 cursor-pointer"
+        >
+          + New Category
+        </button>
+      </div>
+
       {categories?.length === 0 ? (
         <p className="text-gray-500 text-center">No categories found.</p>
       ) : (

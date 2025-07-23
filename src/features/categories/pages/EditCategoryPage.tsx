@@ -4,7 +4,7 @@ import { TagIcon } from "@heroicons/react/24/outline";
 import {
   useGetCategoryQuery,
   useUpdateCategoryMutation,
-} from "../../api/categoriesApi";
+} from "../../../app/api/categoriesApi";
 import CategoryFormModal from "../components/CategoryFormModal";
 import SubCategoryItem from "../components/SubCategoryItem";
 import { useParams, useNavigate } from "react-router-dom";
@@ -159,18 +159,22 @@ const EditCategoryPage: React.FC = () => {
   }
 
   return (
-    <div className="flex-1 bg-zinc-50">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-3 mb-6">
-          <TagIcon className="h-8 w-8 text-teal-600" />
-          <h1 className="text-2xl font-bold text-gray-900">Edit Category</h1>
+    <div className="flex-1 bg-zinc-50 min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+          <TagIcon className="h-6 w-6 sm:h-8 sm:w-8 text-teal-600" />
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+            Edit Category
+          </h1>
         </div>
-        <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
+        <div className="bg-white shadow-lg rounded-lg p-4 sm:p-6 border border-gray-200">
           {updateErrorMessage && (
-            <p className="text-red-600 mb-4">{updateErrorMessage}</p>
+            <p className="text-red-600 mb-4 text-sm sm:text-base">
+              {updateErrorMessage}
+            </p>
           )}
           <div>
-            <div className="max-w-md space-y-6">
+            <div className="max-w-md space-y-4 sm:space-y-6">
               <div>
                 <label
                   htmlFor="name"
@@ -188,7 +192,7 @@ const EditCategoryPage: React.FC = () => {
                       message: "Category name cannot exceed 100 characters",
                     },
                   })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-600 focus:ring-teal-600"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-600 focus:ring-teal-600 text-sm sm:text-base"
                 />
                 {errors.name && (
                   <p className="mt-1 text-sm text-red-600">
@@ -206,7 +210,7 @@ const EditCategoryPage: React.FC = () => {
                 <textarea
                   id="description"
                   {...register("description")}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-600 focus:ring-teal-600"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-600 focus:ring-teal-600 text-sm sm:text-base"
                   rows={4}
                 />
               </div>
@@ -238,7 +242,7 @@ const EditCategoryPage: React.FC = () => {
                     valueAsNumber: true,
                     min: { value: 0, message: "Sort order must be positive" },
                   })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-600 focus:ring-teal-600"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-600 focus:ring-teal-600 text-sm sm:text-base"
                 />
                 {errors.sortOrder && (
                   <p className="mt-1 text-sm text-red-600">
@@ -268,18 +272,18 @@ const EditCategoryPage: React.FC = () => {
                   <label className="block text-sm font-medium text-gray-700">
                     Current Images
                   </label>
-                  <div className="mt-4 flex flex-wrap gap-4">
+                  <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     {filePreviews.map((preview, index) => (
                       <div key={index} className="relative">
                         <img
                           src={preview}
                           alt={`Preview ${index}`}
-                          className="h-24 w-24 object-cover rounded-md"
+                          className="h-20 w-20 sm:h-24 sm:w-24 object-cover rounded-md"
                         />
                         <button
                           type="button"
                           onClick={() => handleRemoveImage(preview)}
-                          className="absolute top-0 right-0 bg-red-600 text-white rounded-full h-6 w-6 flex items-center justify-center"
+                          className="absolute top-0 right-0 bg-red-600 text-white rounded-full h-5 w-5 sm:h-6 sm:w-6 flex items-center justify-center"
                           title="Remove image"
                         >
                           ×
@@ -290,12 +294,12 @@ const EditCategoryPage: React.FC = () => {
                 </div>
               )}
               <div>
-                <div className="flex items-baseline gap-6 mb-2">
+                <div className="flex items-baseline gap-4 sm:gap-6 mb-2">
                   <label className="block text-sm font-medium text-gray-700 underline">
                     Subcategories
                   </label>
                   <p
-                    className="text-teal-600 hover:text-teal-800 underline text-3xl cursor-pointer"
+                    className="text-teal-600 hover:text-teal-800 underline text-2xl sm:text-3xl cursor-pointer"
                     onClick={openModal}
                   >
                     +
@@ -320,11 +324,11 @@ const EditCategoryPage: React.FC = () => {
                 )}
               </div>
             </div>
-            <div className="flex justify-end space-x-4 mt-6">
+            <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 mt-4 sm:mt-6">
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md cursor-pointer hover:bg-gray-200"
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md cursor-pointer hover:bg-gray-200 w-full sm:w-auto"
               >
                 Back
               </button>
@@ -332,7 +336,7 @@ const EditCategoryPage: React.FC = () => {
                 type="submit"
                 disabled={isUpdating}
                 onClick={handleSubmit(onSubmit)}
-                className={`px-4 py-2 text-sm font-medium text-white rounded-md ${
+                className={`px-4 py-2 text-sm font-medium text-white rounded-md w-full sm:w-auto ${
                   isUpdating
                     ? "bg-green-400 cursor-not-allowed"
                     : "bg-green-600 hover:bg-green-700"
@@ -343,12 +347,12 @@ const EditCategoryPage: React.FC = () => {
             </div>
           </div>
         </div>
+        <CategoryFormModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          categoryId={categoryId}
+        />
       </div>
-      <CategoryFormModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        categoryId={categoryId}
-      />
     </div>
   );
 };

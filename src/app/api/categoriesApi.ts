@@ -7,7 +7,7 @@ export const API_BASE_URL = "https://localhost:7000/api/";
 export interface CategoryDto {
   id: number;
   name: string;
-  description?: string;
+  description: string;
   imageUrls: string[];
   isActive: boolean;
   sortOrder: number;
@@ -51,6 +51,7 @@ export interface CategoryTreeDto {
   name: string;
   isActive: boolean;
   sortOrder: number;
+  description: string;
   children: CategoryTreeDto[];
 }
 

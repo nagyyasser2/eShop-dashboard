@@ -4,7 +4,7 @@ import { store } from "./app/store";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoutes from "./features/auth/ProtectedRoutes";
 import { useAppSelector } from "./app/hooks";
-import { useGetUserQuery } from "./features/api/eshopApi";
+import { useGetUserQuery } from "./app/api/eshopApi";
 import Login from "./features/auth/Login";
 import Register from "./features/auth/Register";
 import { ToastContainer } from "react-toastify";

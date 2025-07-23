@@ -12,8 +12,8 @@ const Categories: React.FC = () => {
   return (
     <div className="flex-1 bg-zinc-50">
       <div className="max-w-7xl mx-auto">
-        <CategoriesHeader openModal={openModal} />
-        <CategoriesList />
+        <CategoriesHeader />
+        <CategoriesList openModal={openModal} />
         <CategoryFormModal
           isOpen={isModalOpen}
           onClose={closeModal}

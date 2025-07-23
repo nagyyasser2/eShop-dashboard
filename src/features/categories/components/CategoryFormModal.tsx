@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { TagIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
-import { useCreateCategoryMutation } from "../../api/categoriesApi";
+import { useCreateCategoryMutation } from "../../../app/api/categoriesApi";
 
 interface CategoryForm {
   name: string;

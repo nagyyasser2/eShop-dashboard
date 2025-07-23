@@ -17,6 +17,8 @@ import Banners from "../banners/Banners";
 import Discounts from "../discounts/Discounts";
 import CreateProductVariantForm from "../products/components/CreateProductVariantForm";
 import EditCategoryPage from "../categories/pages/EditCategoryPage";
+import EditBannerPage from "../banners/pages/EditBannerPage";
+import CreateBannerPage from "../banners/pages/CreateBannerPage";
 
 const ProtectedRoutes = () => {
   const { isLoading, isAuthenticated } = useAppSelector((state) => state.auth);
@@ -55,6 +57,8 @@ const ProtectedRoutes = () => {
         <Route path="/coupons" element={<Coupons />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/banners" element={<Banners />} />
+        <Route path="/banners/create" element={<CreateBannerPage />} />
+        <Route path="/banners/:id/edit" element={<EditBannerPage />} />
         <Route path="/discounts" element={<Discounts />} />
         <Route path="/payments" element={<Payments />} />
         <Route path="/customers" element={<Customers />} />

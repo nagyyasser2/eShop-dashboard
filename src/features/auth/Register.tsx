@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LockClosedIcon } from "@heroicons/react/24/outline";
-import { useRegisterMutation } from "../api/eshopApi";
+import { useRegisterMutation } from "../../app/api/eshopApi";
 
 const Register: React.FC = () => {
   const [firstName, setFirstName] = useState("");

@@ -1,7 +1,7 @@
 import React from "react";
 import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
 import type { User } from "../../types";
-import { useLogoutMutation } from "../../features/api/eshopApi";
+import { useLogoutMutation } from "../../app/api/eshopApi";
 
 interface UserProfileProps {
   user: User | null;
