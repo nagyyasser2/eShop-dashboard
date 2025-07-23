@@ -4,4 +4,24 @@
 body {
   overflow: hidden;
   height: 100vh;
+  max-width: 1950px;
+  margin: 0 auto;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 6px; /* Slim scrollbar width */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Light track color */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b0afaf; /* Color close to white */
+  border-radius: 3px; /* Rounded edges for the scrollbar thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d1d1d1; /* Slightly darker on hover */
 }

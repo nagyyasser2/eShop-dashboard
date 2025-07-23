@@ -35,7 +35,7 @@ const Layout: React.FC = () => {
             toggleSidebar={toggleSidebar}
             sidebarOpen={sidebarOpen}
           />
-          <div className="max-w-8xl mx-auto mb-6 ">
+          <div className="mx-auto mb-6 mt-6 max-w-9xl px-4 sm:px-6 lg:px-8">
             <Outlet />
           </div>
         </main>

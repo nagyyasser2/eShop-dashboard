@@ -11,7 +11,7 @@ const Categories: React.FC = () => {
 
   return (
     <div className="flex-1 bg-zinc-50">
-      <div className="mx-4 sm:mx-6 lg:mx-8 xl:mx-10 2xl:mx-12">
+      <div className="max-w-7xl mx-auto">
         <CategoriesHeader openModal={openModal} />
         <CategoriesList />
         <CategoryFormModal

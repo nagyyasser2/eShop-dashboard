@@ -22,6 +22,7 @@ function AppContent() {
       </div>
     );
   }
+
   return (
     <Router>
       <Routes>

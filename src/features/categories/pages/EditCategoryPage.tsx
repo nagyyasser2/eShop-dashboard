@@ -17,9 +17,12 @@ const EditCategoryPage: React.FC = () => {
   const categoryId = parseInt(id || "0", 10);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filePreviews, setFilePreviews] = useState<string[]>([]);
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const [imagesToRemove, setImagesToRemove] = useState<string[]>([]);
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-
   const navigate = useNavigate();
 
   const {
@@ -32,6 +35,7 @@ const EditCategoryPage: React.FC = () => {
     includeSubCategories: true,
   });
 
+  // Define handleSubcategoryDeleted function
   const handleSubcategoryDeleted = () => {
     refetch();
   };
@@ -44,6 +48,7 @@ const EditCategoryPage: React.FC = () => {
     handleSubmit,
     setValue,
     formState: { errors },
+    reset,
   } = useForm<CategoryForm>({
     defaultValues: {
       name: "",
@@ -56,10 +61,6 @@ const EditCategoryPage: React.FC = () => {
     },
   });
 
-  const [filePreviews, setFilePreviews] = useState<string[]>([]);
-  const [newFilePreviews, setNewFilePreviews] = useState<string[]>([]);
-  const [imagesToRemove, setImagesToRemove] = useState<string[]>([]);
-
   useEffect(() => {
     if (category) {
       setValue("name", category.name);
@@ -67,29 +68,42 @@ const EditCategoryPage: React.FC = () => {
       setValue("isActive", category.isActive);
       setValue("sortOrder", category.sortOrder);
       setValue("parentCategoryId", category.parentCategoryId);
-      setFilePreviews(category.imageUrls || []);
+      setFilePreviews(
+        category.imageUrls?.map((url) => `${SERVER_BASE_URL}/${url}`) || []
+      );
     }
   }, [category, setValue]);
 
   useEffect(() => {
     return () => {
-      newFilePreviews.forEach((url) => URL.revokeObjectURL(url));
+      filePreviews.forEach((url) => {
+        if (url.startsWith("blob:")) {
+          URL.revokeObjectURL(url);
+        }
+      });
     };
-  }, [newFilePreviews]);
+  }, [filePreviews]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (files) {
-      const previews = Array.from(files).map((file) =>
-        URL.createObjectURL(file)
-      );
-      setNewFilePreviews((prev) => [...prev, ...previews]);
+    if (files && files.length > 0) {
+      const newFileArray = Array.from(files);
+      const previews = newFileArray.map((file) => URL.createObjectURL(file));
+      setNewFiles((prev) => [...prev, ...newFileArray]);
       setFilePreviews((prev) => [...prev, ...previews]);
+      setValue("imageFiles", files);
     }
   };
 
   const handleRemoveImage = (url: string) => {
-    setImagesToRemove((prev) => [...prev, url]);
+    if (url.startsWith("blob:")) {
+      const index = filePreviews.indexOf(url);
+      setNewFiles((prev) => prev.filter((_, i) => i !== index));
+      URL.revokeObjectURL(url);
+    } else {
+      const cleanUrl = url.replace(`${SERVER_BASE_URL}/`, "");
+      setImagesToRemove((prev) => [...prev, cleanUrl]);
+    }
     setFilePreviews((prev) => prev.filter((preview) => preview !== url));
   };
 
@@ -101,12 +115,21 @@ const EditCategoryPage: React.FC = () => {
         isActive: data.isActive,
         sortOrder: data.sortOrder,
         parentCategoryId: data.parentCategoryId,
-        imageFiles: data.imageFiles ? Array.from(data.imageFiles) : [],
+        imageFiles: newFiles,
         imageUrlsToRemove: imagesToRemove,
       };
-      console.log("categoryDto: ", categoryDto);
       await updateCategory({ id: categoryId, categoryDto }).unwrap();
       toast.success("Category updated successfully");
+      setNewFiles([]);
+      setImagesToRemove([]);
+      setFilePreviews(
+        categoryDto.imageFiles?.map((file) => URL.createObjectURL(file)) || []
+      );
+      reset({
+        ...data,
+        imageFiles: undefined,
+        imageUrlsToRemove: [],
+      });
     } catch (err: any) {
       console.error("Failed to update category:", err);
       toast.error("Failed to update category");
@@ -249,11 +272,7 @@ const EditCategoryPage: React.FC = () => {
                     {filePreviews.map((preview, index) => (
                       <div key={index} className="relative">
                         <img
-                          src={
-                            preview.startsWith("blob:")
-                              ? preview
-                              : `${SERVER_BASE_URL}/${preview}`
-                          }
+                          src={preview}
                           alt={`Preview ${index}`}
                           className="h-24 w-24 object-cover rounded-md"
                         />
@@ -289,8 +308,8 @@ const EditCategoryPage: React.FC = () => {
                         key={subCategory.id}
                         id={subCategory.id}
                         name={subCategory.name}
-                        parentCategoryId={categoryId} // Pass parent ID
-                        onDelete={handleSubcategoryDeleted} // Pass refresh handler
+                        parentCategoryId={categoryId}
+                        onDelete={handleSubcategoryDeleted}
                       />
                     ))}
                   </ul>
@@ -305,7 +324,7 @@ const EditCategoryPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md cursor-pointer hover:bg-gray-200"
               >
                 Back
               </button>

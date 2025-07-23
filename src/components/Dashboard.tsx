@@ -61,7 +61,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="w-full flex overflow-hidden p-4 pt-0">
+    <div className="w-full min-h-screen flex items-start justify-center overflow-hidden p-4 pt-0">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-6xl">
         {statsCards.map((card, index) => {
           const IconComponent = card.icon;
