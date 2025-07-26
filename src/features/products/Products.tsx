@@ -1,6 +1,7 @@
 import React from "react";
 import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import ProductsList from "./components/ProductsList";
+import { Link } from "react-router-dom";
 
 const Products: React.FC = () => {
   return (
@@ -23,12 +24,12 @@ const Products: React.FC = () => {
               </p>
             </div>
             <div>
-              <a
-                href="/products/create"
+              <Link
+                to="/products/create"
                 className="bg-green-600 text-white cursor-pointer px-4 py-2 rounded hover:bg-green-700 transition duration-200"
               >
-                Add New Product
-              </a>
+                + Create Product
+              </Link>
             </div>
           </div>
           <ProductsList />

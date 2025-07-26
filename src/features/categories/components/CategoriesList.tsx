@@ -98,7 +98,7 @@ const CategoriesList = ({ openModal }: { openModal: () => void }) => {
   }
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
+    <div className="max-w-7xl mx-auto bg-white shadow-lg rounded-lg p-6 border border-gray-200">
       <div className="mb-4 flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-700">Categories</h2>
@@ -110,7 +110,7 @@ const CategoriesList = ({ openModal }: { openModal: () => void }) => {
           onClick={openModal}
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200 cursor-pointer"
         >
-          + New Category
+          + Create Category
         </button>
       </div>
 

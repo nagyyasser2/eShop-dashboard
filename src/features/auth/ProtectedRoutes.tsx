@@ -5,7 +5,6 @@ import Dashboard from "../../components/Dashboard";
 import Products from "../products/Products";
 import CreateProductPage from "../products/pages/CreateProductPage";
 import EditProductPage from "../products/pages/EditProductPage";
-import ProductDetailsPage from "../products/pages/ProductDetailsPage";
 import Orders from "../orders/Orders";
 import Customers from "../customers/Customers";
 import Settings from "../settings/Settings";
@@ -42,7 +41,6 @@ const ProtectedRoutes = () => {
         <Route path="/products" element={<Products />} />
         <Route path="/products/create" element={<CreateProductPage />} />
         <Route path="/products/edit/:id" element={<EditProductPage />} />
-        <Route path="/products/:id" element={<ProductDetailsPage />} />
         <Route
           path="/products/:id/variants/create"
           element={<CreateProductVariantForm />}

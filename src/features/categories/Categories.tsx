@@ -10,7 +10,7 @@ const Categories: React.FC = () => {
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <div className="flex-1 bg-zinc-50">
+    <div className="flex-1 bg-zinc-50 pl-6">
       <div className="max-w-7xl mx-auto">
         <CategoriesHeader />
         <CategoriesList openModal={openModal} />

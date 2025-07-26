@@ -46,20 +46,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
       iconColor: "text-yellow-600",
     },
     {
-      name: "Coupons",
-      path: "/coupons",
-      icon: TicketIcon,
-      roles: ["admin", "manager"],
-      iconColor: "text-orange-600",
-    },
-    {
-      name: "Discounts",
-      path: "/discounts",
-      icon: PercentBadgeIcon,
-      roles: ["admin", "manager"],
-      iconColor: "text-green-600",
-    },
-    {
       name: "Orders",
       path: "/orders",
       icon: ShoppingBagIcon,
@@ -81,13 +67,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
       iconColor: "text-purple-600",
     },
     {
-      name: "Admins",
-      path: "/admins",
-      icon: ShieldCheckIcon,
-      roles: ["admin", "manager"],
-      iconColor: "text-red-600",
-    },
-    {
       name: "Settings",
       path: "/settings",
       icon: CogIcon,
@@ -104,18 +83,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
     >
       <div className="flex flex-col h-full">
         {/* Sidebar Header */}
-        <div className="relative flex items-center justify-between px-4 py-5 pt-10">
+        <div className="flex items-center gap-2 px-8 py-2 pt-5">
+          <img src="/icon.svg" alt="Icon" width="30" />
           <Link
             to="/"
-            className="absolute left-1/2 -translate-x-1/2 transform text-3xl font-extrabold tracking-wide text-gray-800 hover:underline"
+            className="text-2xl font-extrabold tracking-wide text-gray-800 hover:underline"
             onClick={toggleSidebar}
           >
-            Jumia
+            eShop
           </Link>
         </div>
+
         {/* Sidebar Content */}
         <div className="flex-1 overflow-y-auto">
-          <nav className="px-4 py-6">
+          <nav className="px-4 py-3">
             <ul className="space-y-2">
               {navItems.map((item) => (
                 <li key={item.path} onClick={toggleSidebar}>
@@ -134,7 +115,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
                           : item.iconColor
                       }`}
                     />
-                    <span>{item.name}</span>
+                    <span className="hover:underline">{item.name}</span>
                   </Link>
                 </li>
               ))}

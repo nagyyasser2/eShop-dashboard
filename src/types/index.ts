@@ -18,15 +18,47 @@ export interface AuthState {
 }
 
 export interface Product {
-  id: string;
+  id: number;
   name: string;
-  description: string;
+  description?: string;
+  shortDescription?: string;
+  sku: string;
   price: number;
-  category: string;
-  stock: number;
-  imageUrl: string;
+  comparePrice?: number;
+  stockQuantity: number;
+  trackQuantity: boolean;
+  isActive: boolean;
+  isFeatured: boolean;
+  weight: number;
+  dimensions?: string;
+  tags?: string;
   createdAt: string;
-  updatedAt: string;
+  categoryId?: number;
+  category?: Category | null;
+  images: Image[];
+  variants: Variant[];
+}
+
+export interface Image {
+  id: number;
+  url: string;
+  altText?: string;
+  isPrimary: boolean;
+  sortOrder: number;
+  createdAt: string;
+  productId: number;
+}
+
+export interface Variant {
+  id: number;
+  sku: string;
+  price?: number;
+  stockQuantity: number;
+  isActive: boolean;
+  color: string;
+  size: string;
+  createdAt: string;
+  productId: number;
 }
 
 export interface Category {
@@ -37,8 +69,10 @@ export interface Category {
   isActive: boolean;
   sortOrder: number;
   createdAt: string;
-  products: any[]; // Adjust type based on your Product interface if available
-  subCategories: any[]; // Adjust type based on your SubCategory interface if available
+  parentCategoryId?: number;
+  parentCategory?: Category | null;
+  childCategories: Category[];
+  products: Product[];
 }
 
 export interface SubCategory {
