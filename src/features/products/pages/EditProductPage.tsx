@@ -7,12 +7,16 @@ import {
 } from "@heroicons/react/24/outline";
 import { Link, useParams } from "react-router-dom";
 import {
-  useGetProductByIdQuery,
-  useUpdateProductMutation,
   type UpdateProductDto,
   type CreateVariantDto,
-} from "../../../app/api/productsApi";
+} from "../../../types/index";
 import VariantFormModal from "../components/VariantFormModal";
+import CategorySelection from "../components/CategorySelection"; // Import the CategorySelection component
+import {
+  useGetProductByIdQuery,
+  useUpdateProductMutation,
+} from "../../../app/api/productsApi";
+import { SERVER_BASE_URL } from "../../../utils/constants";
 
 const EditProductPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,6 +36,7 @@ const EditProductPage: React.FC = () => {
     control,
     formState: { errors },
     reset,
+    setValue, // Add setValue for CategorySelection
   } = useForm<UpdateProductDto>({
     defaultValues: {
       id: productId,
@@ -130,7 +135,7 @@ const EditProductPage: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 p-4 sm:p-6 bg-zinc-50 min-h-screen">
+    <div className="flex-1 bg-zinc-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <ShoppingBagIcon className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
@@ -151,9 +156,6 @@ const EditProductPage: React.FC = () => {
           )}
           {!isLoading && !error && product && (
             <>
-              <h2 className="text-base sm:text-lg font-semibold text-gray-700 mb-4">
-                Update Product Details
-              </h2>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div>
@@ -380,25 +382,16 @@ const EditProductPage: React.FC = () => {
                       </p>
                     )}
                   </div>
-                  <div>
-                    <label
-                      htmlFor="categoryId"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Category ID
-                    </label>
-                    <input
-                      id="categoryId"
-                      type="number"
-                      {...register("categoryId")}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm"
+
+                  {/* Replace the simple categoryId input with CategorySelection component */}
+                  <div className="sm:col-span-2">
+                    <CategorySelection
+                      register={register}
+                      errors={errors}
+                      setValue={setValue}
                     />
-                    {errors.categoryId && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.categoryId.message}
-                      </p>
-                    )}
                   </div>
+
                   <div className="flex items-center space-x-6 sm:col-span-2">
                     <div>
                       <label
@@ -479,7 +472,11 @@ const EditProductPage: React.FC = () => {
                         {product.images.map((image) => (
                           <div key={image.id} className="relative">
                             <img
-                              src={image.url}
+                              src={
+                                image.url.startsWith("blob:")
+                                  ? image.url
+                                  : `${SERVER_BASE_URL + image.url}`
+                              }
                               alt={image.altText || "Product image"}
                               className="h-24 w-full object-cover rounded-md"
                             />

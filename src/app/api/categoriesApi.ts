@@ -52,7 +52,8 @@ export interface CategoryTreeDto {
   isActive: boolean;
   sortOrder: number;
   description: string;
-  children: CategoryTreeDto[];
+  productCount: number;
+  childCategories: CategoryTreeDto[];
 }
 
 // Helper function to create FormData from category DTO

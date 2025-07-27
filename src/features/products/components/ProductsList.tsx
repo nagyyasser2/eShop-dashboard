@@ -7,7 +7,7 @@ import {
 
 const ProductsList: React.FC = () => {
   const { data, error, isLoading } = useGetProductsQuery({});
-
+  console.log("ProductsList data:", data);
   return (
     <div className="overflow-x-auto">
       {isLoading && (

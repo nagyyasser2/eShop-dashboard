@@ -79,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
     <div
       className={`${
         isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-      } fixed md:static inset-y-0 left-0 z-30 w-64 bg-zinc-50 shadow-lg transition-transform duration-200 ease-in-out shadow-md shadow-green-900/20`}
+      } fixed md:static inset-y-0 left-0 z-30 w-64 bg-zinc-50 shadow-lg transition-transform duration-50 ease-in-out shadow-md shadow-green-900/20`}
     >
       <div className="flex flex-col h-full">
         {/* Sidebar Header */}
@@ -87,7 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
           <img src="/icon.svg" alt="Icon" width="30" />
           <Link
             to="/"
-            className="text-2xl font-extrabold tracking-wide text-gray-800 hover:underline"
+            className="text-2xl font-extrabold tracking-wide text-gray-800 underline"
             onClick={toggleSidebar}
           >
             eShop

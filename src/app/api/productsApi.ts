@@ -3,7 +3,7 @@ import type {
   CreateVariantDto,
   UpdateProductDto,
   VariantDto,
-} from "../../types/variants";
+} from "../../types/index";
 
 const API_BASE_URL = "https://localhost:7000/api/";
 
@@ -96,14 +96,44 @@ export const productsApi = createApi({
         const formData = new FormData();
         for (const [key, value] of Object.entries(product)) {
           if (key === "images" && value) {
-            (value as File[]).forEach((file, index) => {
-              formData.append(`Images[${index}]`, file);
+            (value as File[]).forEach((file) => {
+              formData.append("images", file);
             });
           } else if (key === "variants" && value) {
-            formData.append("Variants", JSON.stringify(value));
+            (value as CreateVariantDto[]).forEach((variant, index) => {
+              formData.append(`Variants[${index}].SKU`, variant.sku);
+              if (variant.price !== undefined && variant.price !== null) {
+                formData.append(
+                  `Variants[${index}].Price`,
+                  variant.price.toString()
+                );
+              }
+              formData.append(
+                `Variants[${index}].StockQuantity`,
+                variant.stockQuantity.toString()
+              );
+              formData.append(
+                `Variants[${index}].IsActive`,
+                (variant.isActive ?? false).toString()
+              );
+              if (variant.color) {
+                formData.append(`Variants[${index}].Color`, variant.color);
+              }
+              if (variant.size) {
+                formData.append(`Variants[${index}].Size`, variant.size);
+              }
+              formData.append(
+                `Variants[${index}].ProductId`,
+                variant.productId?.toString() || "0"
+              );
+            });
           } else if (value !== undefined && value !== null) {
             formData.append(key, value.toString());
           }
+        }
+        // Log FormData entries for debugging
+        for (const [key, value] of formData.entries()) {
+          console.log(`${key}:`, value);
         }
         return {
           url: "products",

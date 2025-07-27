@@ -68,7 +68,7 @@ const VariantFormModal: React.FC<VariantFormModalProps> = ({
 
       {/* Modal container */}
       <div
-        className={`relative bg-white rounded-xl p-4 sm:p-6 w-full max-w-md sm:max-w-lg mx-4 shadow-2xl transform transition-all duration-300 ${
+        className={`relative bg-white rounded-xl p-4 sm:p-6 w-full max-w-md sm:max-w-lg mx-4 shadow-2xl transform transition-all duration-50 ${
           isOpen ? "scale-100" : "scale-95"
         }`}
       >

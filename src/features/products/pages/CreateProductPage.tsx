@@ -6,18 +6,20 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import VariantFormModal from "../components/VariantFormModal";
-import { Link } from "react-router-dom";
+import CategorySelection from "../components/CategorySelection";
+import { Link, useNavigate } from "react-router-dom";
 import {
   useCreateProductMutation,
   type CreateProductDto,
-  type CreateVariantDto,
 } from "../../../app/api/productsApi";
+import { toast } from "react-toastify";
 
 const CreateProductPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const navigate = useNavigate();
   const [createProduct, { isLoading: isCreating, error: createError }] =
     useCreateProductMutation();
 
@@ -27,6 +29,7 @@ const CreateProductPage: React.FC = () => {
     control,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<CreateProductDto>({
     defaultValues: {
       name: "",
@@ -39,6 +42,7 @@ const CreateProductPage: React.FC = () => {
       weight: 0,
       variants: [],
       images: [],
+      categoryId: undefined,
     },
   });
 
@@ -47,7 +51,7 @@ const CreateProductPage: React.FC = () => {
     name: "variants",
   });
 
-  const handleVariantSubmit = (data: CreateVariantDto) => {
+  const handleVariantSubmit = (data: CreateProductDto) => {
     if (editingIndex !== null) {
       update(editingIndex, data);
       setEditingIndex(null);
@@ -78,13 +82,17 @@ const CreateProductPage: React.FC = () => {
       setFormError(null);
       reset();
       setSelectedImages([]);
+      toast.success("Product created successfully.");
+      navigate("/products");
     } catch (err) {
       setFormError("Failed to create product. Please try again.");
+      toast.error("Unable to create product");
+      console.error("CreateProduct error:", err);
     }
   };
 
   return (
-    <div className="flex-1  sm:p-6 bg-zinc-50 min-h-screen">
+    <div className="flex-1 bg-zinc-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <ShoppingBagIcon className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
@@ -93,11 +101,9 @@ const CreateProductPage: React.FC = () => {
           </h1>
         </div>
         <div className="bg-white shadow-lg rounded-lg p-4 sm:p-6 border border-gray-200">
-          <h2 className="text-base sm:text-lg font-semibold text-gray-700 mb-4">
-            Add New Product
-          </h2>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              {/* Product Details */}
               <div>
                 <label
                   htmlFor="name"
@@ -322,25 +328,8 @@ const CreateProductPage: React.FC = () => {
                   </p>
                 )}
               </div>
-              <div>
-                <label
-                  htmlFor="categoryId"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Category ID
-                </label>
-                <input
-                  id="categoryId"
-                  type="number"
-                  {...register("categoryId")}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm"
-                />
-                {errors.categoryId && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.categoryId.message}
-                  </p>
-                )}
-              </div>
+
+              {/* Track Quantity, Active, Featured */}
               <div className="flex items-center space-x-6 sm:col-span-2">
                 <div>
                   <label
@@ -400,44 +389,51 @@ const CreateProductPage: React.FC = () => {
                   )}
                 </div>
               </div>
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="images"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Images
-                </label>
-                <input
-                  id="images"
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
-                />
-                {selectedImages.length > 0 && (
-                  <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    {selectedImages.map((image, index) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={URL.createObjectURL(image)}
-                          alt={`Preview ${index + 1}`}
-                          className="h-24 w-full object-cover rounded-md"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 hover:bg-red-700"
-                        >
-                          <TrashIcon className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+            </div>
+            <CategorySelection
+              register={register}
+              errors={errors}
+              setValue={setValue}
+            />
+            {/* Images */}
+            <div className="sm:col-span-2">
+              <label
+                htmlFor="images"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Images
+              </label>
+              <input
+                id="images"
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageChange}
+                className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+              />
+              {selectedImages.length > 0 && (
+                <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {selectedImages.map((image, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={URL.createObjectURL(image)}
+                        alt={`Preview ${index + 1}`}
+                        className="h-24 w-full object-cover rounded-md"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 hover:bg-red-700"
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
+            {/* Variants */}
             <div className="mt-8">
               <div className="flex items-center mb-4 gap-4">
                 <h3 className="text-base sm:text-lg font-semibold text-gray-700">
@@ -520,15 +516,7 @@ const CreateProductPage: React.FC = () => {
               )}
             </div>
 
-            {formError && (
-              <p className="mt-4 text-sm text-red-500">{formError}</p>
-            )}
-            {createError && (
-              <p className="mt-4 text-sm text-red-500">
-                Error creating product: {createError.toString()}
-              </p>
-            )}
-
+            {/* Actions */}
             <div className="flex justify-end space-x-4 mt-6">
               <Link
                 to="/products"

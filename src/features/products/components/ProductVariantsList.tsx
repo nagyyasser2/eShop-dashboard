@@ -53,7 +53,7 @@ const ProductVariantsList: React.FC<ProductVariantsListProps> = ({
             href={`/products${
               productId ? `/${productId}` : ""
             }/variants/create`}
-            className="bg-green-600 text-white cursor-pointer px-4 py-2 rounded hover:bg-green-700 transition duration-200"
+            className="bg-green-600 text-white cursor-pointer px-4 py-2 rounded hover:bg-green-700 transition duration-50"
           >
             Add New Variant
           </a>
