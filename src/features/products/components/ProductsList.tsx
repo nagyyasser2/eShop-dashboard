@@ -1,13 +1,11 @@
 import React from "react";
 import ProductItem from "./ProductsItem";
-import {
-  useGetProductsQuery,
-  type ProductDto,
-} from "../../../app/api/productsApi";
+import { useGetProductsQuery } from "../../../app/api/productsApi";
+import type { ProductDto } from "../../../types";
 
 const ProductsList: React.FC = () => {
   const { data, error, isLoading } = useGetProductsQuery({});
-  console.log("ProductsList data:", data);
+
   return (
     <div className="overflow-x-auto">
       {isLoading && (

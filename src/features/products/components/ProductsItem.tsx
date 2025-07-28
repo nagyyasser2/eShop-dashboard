@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import type { ProductDto } from "../../../app/api/productsApi";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { useDeleteProductMutation } from "../../../app/api/productsApi";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import type { ProductDto } from "../../../types";
 
 interface ProductItemProps {
   product: ProductDto;
@@ -30,7 +30,7 @@ const ProductsItem = ({ product }: ProductItemProps) => {
     <tr>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
         <Link
-          to={`/products/edit/${product.id}`}
+          to={`/products/${product.id}/edit`}
           className="hover:text-blue-600"
         >
           {product.name}

@@ -115,7 +115,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
                           : item.iconColor
                       }`}
                     />
-                    <span className="hover:underline">{item.name}</span>
+                    <span className="hover:underline font-bold">
+                      {item.name}
+                    </span>
                   </Link>
                 </li>
               ))}

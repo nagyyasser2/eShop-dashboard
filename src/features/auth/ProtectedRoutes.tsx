@@ -40,7 +40,7 @@ const ProtectedRoutes = () => {
         <Route path="/" element={<Dashboard />} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/create" element={<CreateProductPage />} />
-        <Route path="/products/edit/:id" element={<EditProductPage />} />
+        <Route path="/products/:id/edit" element={<EditProductPage />} />
         <Route
           path="/products/:id/variants/create"
           element={<CreateProductVariantForm />}

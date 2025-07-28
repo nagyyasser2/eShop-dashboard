@@ -8,11 +8,9 @@ import {
 import VariantFormModal from "../components/VariantFormModal";
 import CategorySelection from "../components/CategorySelection";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  useCreateProductMutation,
-  type CreateProductDto,
-} from "../../../app/api/productsApi";
+import { useCreateProductMutation } from "../../../app/api/productsApi";
 import { toast } from "react-toastify";
+import type { CreateProductDto, CreateVariantDto } from "../../../types";
 
 const CreateProductPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -51,7 +49,7 @@ const CreateProductPage: React.FC = () => {
     name: "variants",
   });
 
-  const handleVariantSubmit = (data: CreateProductDto) => {
+  const handleVariantSubmit = (data: CreateVariantDto) => {
     if (editingIndex !== null) {
       update(editingIndex, data);
       setEditingIndex(null);
@@ -447,7 +445,7 @@ const CreateProductPage: React.FC = () => {
                     setIsModalOpen(true);
                   }}
                 >
-                  +
+                  Add Variant
                 </button>
               </div>
               {fields.length > 0 ? (

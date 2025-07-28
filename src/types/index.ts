@@ -85,10 +85,11 @@ export interface SubCategory {
   createdAt: string;
   categoryId: number;
   category?: Category;
-  products: any[]; // Adjust type based on your Product interface if available
+  products: any[];
 }
 
 export interface CreateVariantDto {
+  id?: number;
   sku: string;
   price?: number;
   stockQuantity: number;
@@ -96,6 +97,16 @@ export interface CreateVariantDto {
   color?: string;
   size?: string;
   productId?: number;
+}
+
+export interface UpdateVariantDto {
+  id?: number;
+  sku?: string;
+  price?: number;
+  stockQuantity?: number;
+  isActive?: boolean;
+  color?: string;
+  size?: string;
 }
 
 export interface VariantDto {
@@ -108,6 +119,26 @@ export interface VariantDto {
   size?: string;
   createdAt: string;
   productId: number;
+}
+
+export interface CreateProductDto {
+  id?: number;
+  name: string;
+  description?: string;
+  shortDescription?: string;
+  sku: string;
+  price: number;
+  comparePrice?: number;
+  stockQuantity: number;
+  trackQuantity?: boolean;
+  isActive?: boolean;
+  isFeatured?: boolean;
+  weight?: number;
+  dimensions?: string;
+  tags?: string;
+  categoryId?: number;
+  images?: File[];
+  variants?: CreateVariantDto[];
 }
 
 export interface UpdateProductDto {
@@ -128,8 +159,58 @@ export interface UpdateProductDto {
   categoryId?: number;
   newImages?: File[];
   imageIdsToDelete?: number[];
-  variants?: CreateVariantDto[];
+  variants?: UpdateVariantDto[];
   images?: Image[];
+}
+
+export interface UpdateStockDto {
+  quantity: number;
+}
+
+export interface ProductDto {
+  id: number;
+  name: string;
+  description?: string;
+  shortDescription?: string;
+  sku: string;
+  price: number;
+  comparePrice?: number;
+  stockQuantity: number;
+  trackQuantity: boolean;
+  isActive: boolean;
+  isFeatured: boolean;
+  weight: number;
+  dimensions?: string;
+  tags?: string;
+  createdAt: string;
+  categoryId?: number;
+  category?: CategoryDto;
+  images: ImageDto[];
+  variants: VariantDto[];
+}
+
+export interface ImageDto {
+  id: number;
+  url: string;
+  altText?: string;
+  isPrimary: boolean;
+  sortOrder: number;
+  createdAt: string;
+  productId: number;
+}
+
+export interface CategoryDto {
+  id: number;
+  name: string;
+  description?: string;
+  imageUrls: string[];
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+  ParentCategoryId: number;
+  ParentCategoryName: string;
+  ChildCategories: CategoryDto[];
+  ProductCount: number;
 }
 
 export interface Order {

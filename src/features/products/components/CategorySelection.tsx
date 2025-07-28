@@ -1,30 +1,72 @@
-import React, { useState } from "react";
+// CategorySelection.tsx
+import React, { useState, useEffect } from "react";
 import {
   useGetCategoriesTreeQuery,
   type CategoryTreeDto,
 } from "../../../app/api/categoriesApi";
 import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-
 import { type UseFormSetValue } from "react-hook-form";
 
 interface CategorySelectionProps {
-  register: any; // From react-hook-form
-  errors: any; // From react-hook-form
-  setValue: UseFormSetValue<any>; // From react-hook-form
+  register: any;
+  errors: any;
+  setValue: UseFormSetValue<any>;
+  initialCategoryId?: number; // Add initialCategoryId prop
 }
 
 const CategorySelection: React.FC<CategorySelectionProps> = ({
   register,
   errors,
   setValue,
+  initialCategoryId,
 }) => {
   const { data: categories, isLoading, error } = useGetCategoriesTreeQuery();
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
-    null
+    initialCategoryId || null
   );
   const [expandedCategories, setExpandedCategories] = useState<Set<number>>(
     new Set()
   );
+
+  // Initialize form value and expand parent categories when the component mounts
+  useEffect(() => {
+    if (initialCategoryId) {
+      setSelectedCategoryId(initialCategoryId);
+      setValue("categoryId", initialCategoryId, { shouldValidate: true });
+
+      // Find and expand parent categories
+      const expandParentCategories = (
+        cats: CategoryTreeDto[],
+        targetId: number,
+        parentIds: Set<number> = new Set()
+      ): Set<number> => {
+        for (const category of cats) {
+          if (category.id === targetId) {
+            return parentIds;
+          }
+          if (category.childCategories && category.childCategories.length > 0) {
+            const childResult = expandParentCategories(
+              category.childCategories,
+              targetId,
+              new Set([...parentIds, category.id])
+            );
+            if (childResult.size > 0) {
+              return childResult;
+            }
+          }
+        }
+        return new Set();
+      };
+
+      if (categories) {
+        const parentsToExpand = expandParentCategories(
+          categories,
+          initialCategoryId
+        );
+        setExpandedCategories((prev) => new Set([...prev, ...parentsToExpand]));
+      }
+    }
+  }, [initialCategoryId, categories, setValue]);
 
   // Toggle category expansion
   const toggleExpand = (categoryId: number) => {
@@ -44,11 +86,11 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({
     if (selectedCategoryId === categoryId) {
       // Uncheck if the same category is clicked
       setSelectedCategoryId(null);
-      setValue("categoryId", undefined);
+      setValue("categoryId", undefined, { shouldValidate: true });
     } else {
       // Select new category
       setSelectedCategoryId(categoryId);
-      setValue("categoryId", categoryId);
+      setValue("categoryId", categoryId, { shouldValidate: true });
     }
   };
 
@@ -135,30 +177,30 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({
   };
 
   // Auto-expand categories that have active subcategories or are inactive with active children
-  React.useEffect(() => {
-    if (categories) {
+  useEffect(() => {
+    if (categories && !initialCategoryId) {
       const categoriesToExpand = new Set<number>();
 
       const checkForExpansion = (cats: CategoryTreeDto[]) => {
         cats.forEach((cat) => {
           if (cat.childCategories && cat.childCategories.length > 0) {
-            // Expand if category is inactive but has active children
             const hasActiveChildren = cat.childCategories.some(
               (child) => child.isActive
             );
             if (!cat.isActive && hasActiveChildren) {
               categoriesToExpand.add(cat.id);
             }
-            // Recursively check children
             checkForExpansion(cat.childCategories);
           }
         });
       };
 
       checkForExpansion(categories);
-      setExpandedCategories(categoriesToExpand);
+      setExpandedCategories(
+        (prev) => new Set([...prev, ...categoriesToExpand])
+      );
     }
-  }, [categories]);
+  }, [categories, initialCategoryId]);
 
   return (
     <div>

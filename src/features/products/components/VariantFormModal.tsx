@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import type { CreateVariantDto } from "../../../app/api/productsApi";
+import type { CreateVariantDto } from "../../../types";
 
 interface VariantFormModalProps {
   isOpen: boolean;

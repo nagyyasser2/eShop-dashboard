@@ -1,81 +1,115 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type {
-  CreateVariantDto,
+  CreateProductDto,
   UpdateProductDto,
-  VariantDto,
+  ProductDto,
+  UpdateVariantDto,
 } from "../../types/index";
+import { API_BASE_URL } from "../../utils/constants";
 
-const API_BASE_URL = "https://localhost:7000/api/";
+// Helper function to create FormData for product DTOs
+const createProductFormData = (
+  product: CreateProductDto | UpdateProductDto | any
+): FormData => {
+  const formData = new FormData();
 
-export interface CreateProductDto {
-  id?: number;
-  name: string;
-  description?: string;
-  shortDescription?: string;
-  sku: string;
-  price: number;
-  comparePrice?: number;
-  stockQuantity: number;
-  trackQuantity?: boolean;
-  isActive?: boolean;
-  isFeatured?: boolean;
-  weight?: number;
-  dimensions?: string;
-  tags?: string;
-  categoryId?: number;
-  images?: File[];
-  variants?: CreateVariantDto[];
-}
+  // Common fields for both CreateProductDto and UpdateProductDto
+  formData.append("Id", product.id.toString());
+  formData.append("Name", product.name);
+  formData.append("SKU", product.sku);
+  formData.append("Price", product.price.toString());
+  formData.append("StockQuantity", product.stockQuantity.toString());
+  formData.append("TrackQuantity", product.trackQuantity.toString());
+  formData.append("IsActive", product.isActive.toString());
+  formData.append("IsFeatured", product.isFeatured.toString());
+  formData.append("Weight", product.weight.toString());
 
-export interface UpdateStockDto {
-  quantity: number;
-}
+  if (product.description) {
+    formData.append("Description", product.description);
+  }
+  if (product.shortDescription) {
+    formData.append("ShortDescription", product.shortDescription);
+  }
+  if (product.comparePrice) {
+    formData.append("ComparePrice", product.comparePrice.toString());
+  }
+  if (product.dimensions) {
+    formData.append("Dimensions", product.dimensions);
+  }
+  if (product.tags) {
+    formData.append("Tags", product.tags);
+  }
+  if (product.categoryId) {
+    formData.append("CategoryId", product.categoryId.toString());
+  }
 
-export interface ImageDto {
-  id: number;
-  url: string;
-  altText?: string;
-  isPrimary: boolean;
-  sortOrder: number;
-  createdAt: string;
-  productId: number;
-}
+  // Handle images (for CreateProductDto)
+  if ("images" in product && product.images && product.images.length > 0) {
+    product.images.forEach((file: any) => {
+      formData.append("Images", file); // No array indexing
+    });
+  }
 
-export interface CategoryDto {
-  id: number;
-  name: string;
-  description?: string;
-  imageUrls: string[];
-  isActive: boolean;
-  sortOrder: number;
-  createdAt: string;
-  ParentCategoryId: number;
-  ParentCategoryName: string;
-  ChildCategories: CategoryDto[];
-  ProductCount: number;
-}
+  // Handle new images and image deletions (for UpdateProductDto)
+  if (
+    "newImages" in product &&
+    product.newImages &&
+    product.newImages.length > 0
+  ) {
+    product.newImages.forEach((file: any) => {
+      formData.append("NewImages", file); // No array indexing
+    });
+  }
+  if (
+    "imageIdsToDelete" in product &&
+    product.imageIdsToDelete &&
+    product.imageIdsToDelete.length > 0
+  ) {
+    product.imageIdsToDelete.forEach((id: any) => {
+      formData.append("ImageIdsToDelete", id.toString()); // No array indexing
+    });
+  }
 
-export interface ProductDto {
-  id: number;
-  name: string;
-  description?: string;
-  shortDescription?: string;
-  sku: string;
-  price: number;
-  comparePrice?: number;
-  stockQuantity: number;
-  trackQuantity: boolean;
-  isActive: boolean;
-  isFeatured: boolean;
-  weight: number;
-  dimensions?: string;
-  tags?: string;
-  createdAt: string;
-  categoryId?: number;
-  category?: CategoryDto;
-  images: ImageDto[];
-  variants: VariantDto[];
-}
+  // Handle variants
+  if (product.variants && product.variants.length > 0) {
+    product.variants.forEach((variant: any, index: number) => {
+      if (variant.id !== undefined && variant.id !== null) {
+        formData.append(`Variants[${index}].Id`, variant.id.toString());
+      }
+      if (variant.sku) {
+        formData.append(`Variants[${index}].SKU`, variant.sku);
+      }
+      if (variant.price !== undefined && variant.price !== null) {
+        formData.append(`Variants[${index}].Price`, variant.price.toString());
+      }
+      if (variant.stockQuantity !== undefined) {
+        formData.append(
+          `Variants[${index}].StockQuantity`,
+          variant.stockQuantity.toString()
+        );
+      }
+      if (variant.isActive !== undefined) {
+        formData.append(
+          `Variants[${index}].IsActive`,
+          variant.isActive.toString()
+        );
+      }
+      if (variant.color) {
+        formData.append(`Variants[${index}].Color`, variant.color);
+      }
+      if (variant.size) {
+        formData.append(`Variants[${index}].Size`, variant.size);
+      }
+    });
+  }
+
+  // Debug FormData
+  for (const [key, value] of formData.entries()) {
+    console.log(`${key}:`, value instanceof File ? value.name : value);
+  }
+
+  return formData;
+};
 
 export const productsApi = createApi({
   reducerPath: "productsApi",
@@ -92,55 +126,11 @@ export const productsApi = createApi({
   tagTypes: ["Product"],
   endpoints: (builder) => ({
     createProduct: builder.mutation<ProductDto, CreateProductDto>({
-      query: (product) => {
-        const formData = new FormData();
-        for (const [key, value] of Object.entries(product)) {
-          if (key === "images" && value) {
-            (value as File[]).forEach((file) => {
-              formData.append("images", file);
-            });
-          } else if (key === "variants" && value) {
-            (value as CreateVariantDto[]).forEach((variant, index) => {
-              formData.append(`Variants[${index}].SKU`, variant.sku);
-              if (variant.price !== undefined && variant.price !== null) {
-                formData.append(
-                  `Variants[${index}].Price`,
-                  variant.price.toString()
-                );
-              }
-              formData.append(
-                `Variants[${index}].StockQuantity`,
-                variant.stockQuantity.toString()
-              );
-              formData.append(
-                `Variants[${index}].IsActive`,
-                (variant.isActive ?? false).toString()
-              );
-              if (variant.color) {
-                formData.append(`Variants[${index}].Color`, variant.color);
-              }
-              if (variant.size) {
-                formData.append(`Variants[${index}].Size`, variant.size);
-              }
-              formData.append(
-                `Variants[${index}].ProductId`,
-                variant.productId?.toString() || "0"
-              );
-            });
-          } else if (value !== undefined && value !== null) {
-            formData.append(key, value.toString());
-          }
-        }
-        // Log FormData entries for debugging
-        for (const [key, value] of formData.entries()) {
-          console.log(`${key}:`, value);
-        }
-        return {
-          url: "products",
-          method: "POST",
-          body: formData,
-        };
-      },
+      query: (product) => ({
+        url: "products",
+        method: "POST",
+        body: createProductFormData(product),
+      }),
       invalidatesTags: ["Product"],
     }),
 
@@ -172,27 +162,11 @@ export const productsApi = createApi({
     }),
 
     updateProduct: builder.mutation<ProductDto, UpdateProductDto>({
-      query: (product) => {
-        const formData = new FormData();
-        for (const [key, value] of Object.entries(product)) {
-          if (key === "newImages" && value) {
-            (value as File[]).forEach((file, index) => {
-              formData.append(`NewImages[${index}]`, file);
-            });
-          } else if (key === "imageIdsToDelete" && value) {
-            (value as number[]).forEach((id, index) => {
-              formData.append(`ImageIdsToDelete[${index}]`, id.toString());
-            });
-          } else if (value !== undefined && value !== null) {
-            formData.append(key, value.toString());
-          }
-        }
-        return {
-          url: `products/${product.id}`,
-          method: "PUT",
-          body: formData,
-        };
-      },
+      query: (product) => ({
+        url: `products/${product.id}`,
+        method: "PUT",
+        body: createProductFormData(product),
+      }),
       invalidatesTags: (result, error, { id }) => [
         { type: "Product", id },
         "Product",
@@ -253,3 +227,6 @@ export const {
   useToggleProductFeaturedMutation,
   useUpdateStockMutation,
 } = productsApi;
+
+// Export utility functions
+export { createProductFormData };

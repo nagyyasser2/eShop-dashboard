@@ -8,6 +8,13 @@ body {
   margin: 0 auto;
 }
 
+input {
+  padding:  0.5rem !important;
+}
+
+textarea {
+  padding: 0.5rem !important;
+}
 /* Custom Scrollbar Styles */
 ::-webkit-scrollbar {
   width: 6px; /* Slim scrollbar width */
