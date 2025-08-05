@@ -110,7 +110,6 @@ const CategoryFormModal: React.FC<CategoryFormModalProps> = ({
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
       }`}
-      onClick={handleClose}
     >
       <div
         className={`relative bg-white rounded-xl p-6 w-full max-w-md shadow-2xl transform transition-transform duration-150 ${

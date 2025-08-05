@@ -14,15 +14,15 @@ const createProductFormData = (
   const formData = new FormData();
 
   // Common fields for both CreateProductDto and UpdateProductDto
-  formData.append("Id", product.id.toString());
+  formData.append("Id", product.id);
   formData.append("Name", product.name);
   formData.append("SKU", product.sku);
-  formData.append("Price", product.price.toString());
-  formData.append("StockQuantity", product.stockQuantity.toString());
-  formData.append("TrackQuantity", product.trackQuantity.toString());
-  formData.append("IsActive", product.isActive.toString());
-  formData.append("IsFeatured", product.isFeatured.toString());
-  formData.append("Weight", product.weight.toString());
+  formData.append("Price", product.price);
+  formData.append("StockQuantity", product.stockQuantity);
+  formData.append("TrackQuantity", product.trackQuantity);
+  formData.append("IsActive", product.isActive);
+  formData.append("IsFeatured", product.isFeatured);
+  formData.append("Weight", product.weight);
 
   if (product.description) {
     formData.append("Description", product.description);
@@ -31,7 +31,7 @@ const createProductFormData = (
     formData.append("ShortDescription", product.shortDescription);
   }
   if (product.comparePrice) {
-    formData.append("ComparePrice", product.comparePrice.toString());
+    formData.append("ComparePrice", product.comparePrice);
   }
   if (product.dimensions) {
     formData.append("Dimensions", product.dimensions);
@@ -40,7 +40,7 @@ const createProductFormData = (
     formData.append("Tags", product.tags);
   }
   if (product.categoryId) {
-    formData.append("CategoryId", product.categoryId.toString());
+    formData.append("CategoryId", product.categoryId);
   }
 
   // Handle images (for CreateProductDto)
@@ -66,7 +66,7 @@ const createProductFormData = (
     product.imageIdsToDelete.length > 0
   ) {
     product.imageIdsToDelete.forEach((id: any) => {
-      formData.append("ImageIdsToDelete", id.toString()); // No array indexing
+      formData.append("ImageIdsToDelete", id); // No array indexing
     });
   }
 
@@ -74,25 +74,22 @@ const createProductFormData = (
   if (product.variants && product.variants.length > 0) {
     product.variants.forEach((variant: any, index: number) => {
       if (variant.id !== undefined && variant.id !== null) {
-        formData.append(`Variants[${index}].Id`, variant.id.toString());
+        formData.append(`Variants[${index}].Id`, variant.id);
       }
       if (variant.sku) {
         formData.append(`Variants[${index}].SKU`, variant.sku);
       }
       if (variant.price !== undefined && variant.price !== null) {
-        formData.append(`Variants[${index}].Price`, variant.price.toString());
+        formData.append(`Variants[${index}].Price`, variant.price);
       }
       if (variant.stockQuantity !== undefined) {
         formData.append(
           `Variants[${index}].StockQuantity`,
-          variant.stockQuantity.toString()
+          variant.stockQuantity
         );
       }
       if (variant.isActive !== undefined) {
-        formData.append(
-          `Variants[${index}].IsActive`,
-          variant.isActive.toString()
-        );
+        formData.append(`Variants[${index}].IsActive`, variant.isActive);
       }
       if (variant.color) {
         formData.append(`Variants[${index}].Color`, variant.color);
