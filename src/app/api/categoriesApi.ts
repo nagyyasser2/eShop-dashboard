@@ -1,7 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-// Configurable API base URL (consider using environment variables in production)
-export const API_BASE_URL = "https://localhost:7000/api/";
+import { API_BASE_URL } from "../../utils/constants";
 
 // Type definitions for DTOs
 export interface CategoryDto {

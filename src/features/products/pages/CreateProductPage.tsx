@@ -21,14 +21,7 @@ const CreateProductPage: React.FC = () => {
   const [createProduct, { isLoading: isCreating, error: createError }] =
     useCreateProductMutation();
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-    reset,
-    setValue,
-  } = useForm<CreateProductDto>({
+  const form = useForm<CreateProductDto>({
     defaultValues: {
       name: "",
       sku: "",
@@ -43,6 +36,15 @@ const CreateProductPage: React.FC = () => {
       categoryId: undefined,
     },
   });
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+    setValue,
+  } = form;
 
   const { fields, append, remove, update } = useFieldArray({
     control,
@@ -388,11 +390,7 @@ const CreateProductPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            <CategorySelection
-              register={register}
-              errors={errors}
-              setValue={setValue}
-            />
+            <CategorySelection form={form} initialCategoryId={undefined} />
             {/* Images */}
             <div className="sm:col-span-2">
               <label

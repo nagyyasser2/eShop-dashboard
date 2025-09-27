@@ -5,22 +5,23 @@ import {
   type CategoryTreeDto,
 } from "../../../app/api/categoriesApi";
 import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import { type UseFormSetValue } from "react-hook-form";
+import { type FieldValues, type UseFormReturn } from "react-hook-form";
 
-interface CategorySelectionProps {
-  register: any;
-  errors: any;
-  setValue: UseFormSetValue<any>;
-  initialCategoryId?: number; // Add initialCategoryId prop
+interface CategorySelectionProps<T extends FieldValues = any> {
+  form: UseFormReturn<T>;
+  initialCategoryId?: number;
 }
 
 const CategorySelection: React.FC<CategorySelectionProps> = ({
-  register,
-  errors,
-  setValue,
+  form,
   initialCategoryId,
 }) => {
   const { data: categories, isLoading, error } = useGetCategoriesTreeQuery();
+  const {
+    register,
+    formState: { errors },
+    setValue,
+  } = form;
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     initialCategoryId || null
   );
@@ -203,73 +204,84 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({
   }, [categories, initialCategoryId]);
 
   return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        Category Selection
-        <span className="text-red-500 ml-1">*</span>
-      </label>
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold text-gray-700">Category</h3>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Category Selection
+          <span className="text-red-500 ml-1">*</span>
+        </label>
 
-      <div className="max-h-80 overflow-y-auto border border-gray-300 rounded-lg p-4 bg-white shadow-sm">
-        {isLoading && (
-          <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
-            <span className="ml-2 text-sm text-gray-500">
-              Loading categories...
-            </span>
-          </div>
-        )}
-
-        {error && (
-          <div className="text-center py-8">
-            <p className="text-sm text-red-500 mb-2">
-              Failed to load categories. Please try again.
-            </p>
-            <button
-              type="button"
-              onClick={() => window.location.reload()}
-              className="text-xs text-green-600 hover:text-green-700 underline"
-            >
-              Retry
-            </button>
-          </div>
-        )}
-
-        {categories && categories.length > 0 ? (
-          <div className="space-y-2">
-            {categories.map((category) => (
-              <CategoryItem key={category.id} category={category} />
-            ))}
-          </div>
-        ) : (
-          !isLoading && (
-            <div className="text-center py-8">
-              <p className="text-sm text-gray-500">No categories available.</p>
+        <div className="max-h-80 overflow-y-auto border border-gray-300 rounded-lg p-4 bg-white shadow-sm">
+          {isLoading && (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+              <span className="ml-2 text-sm text-gray-500">
+                Loading categories...
+              </span>
             </div>
-          )
+          )}
+
+          {error && (
+            <div className="text-center py-8">
+              <p className="text-sm text-red-500 mb-2">
+                Failed to load categories. Please try again.
+              </p>
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="text-xs text-green-600 hover:text-green-700 underline"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {categories && categories.length > 0 ? (
+            <div className="space-y-2">
+              {categories.map((category) => (
+                <CategoryItem key={category.id} category={category} />
+              ))}
+            </div>
+          ) : (
+            !isLoading && (
+              <div className="text-center py-8">
+                <p className="text-sm text-gray-500">
+                  No categories available.
+                </p>
+              </div>
+            )
+          )}
+        </div>
+
+        {/* Hidden input to register categoryId with react-hook-form */}
+        <input
+          type="hidden"
+          {...register("categoryId", {
+            required: "Please select a category",
+            valueAsNumber: true,
+          })}
+        />
+
+        {errors.categoryId && (
+          <p className="mt-2 text-sm text-red-500 flex items-center">
+            <svg
+              className="w-4 h-4 mr-1"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
+            {typeof errors.categoryId?.message === "string"
+              ? errors.categoryId.message
+              : null}
+          </p>
         )}
       </div>
-
-      {/* Hidden input to register categoryId with react-hook-form */}
-      <input
-        type="hidden"
-        {...register("categoryId", {
-          required: "Please select a category",
-          valueAsNumber: true,
-        })}
-      />
-
-      {errors.categoryId && (
-        <p className="mt-2 text-sm text-red-500 flex items-center">
-          <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-              clipRule="evenodd"
-            />
-          </svg>
-          {errors.categoryId.message}
-        </p>
-      )}
     </div>
   );
 };
