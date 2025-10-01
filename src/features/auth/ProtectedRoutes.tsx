@@ -6,7 +6,6 @@ import Products from "../products/Products";
 import CreateProductPage from "../products/pages/CreateProductPage";
 import EditProductPage from "../products/pages/EditProductPage";
 import Orders from "../orders/Orders";
-import Customers from "../customers/Customers";
 import Settings from "../settings/Settings";
 import Categories from "../categories/Categories";
 import Coupons from "../coupons/Coupons";
@@ -18,6 +17,7 @@ import CreateProductVariantForm from "../products/components/CreateProductVarian
 import EditCategoryPage from "../categories/pages/EditCategoryPage";
 import EditBannerPage from "../banners/pages/EditBannerPage";
 import CreateBannerPage from "../banners/pages/CreateBannerPage";
+import Users from "../users/Users";
 
 const ProtectedRoutes = () => {
   const { isLoading, isAuthenticated } = useAppSelector((state) => state.auth);
@@ -59,7 +59,7 @@ const ProtectedRoutes = () => {
         <Route path="/banners/:id/edit" element={<EditBannerPage />} />
         <Route path="/discounts" element={<Discounts />} />
         <Route path="/payments" element={<Payments />} />
-        <Route path="/customers" element={<Customers />} />
+        <Route path="/users" element={<Users />} />
         <Route path="/admins" element={<Admins />} />
         <Route path="/settings" element={<Settings />} />
       </Route>

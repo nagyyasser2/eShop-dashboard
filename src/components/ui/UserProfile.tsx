@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
 import type { User } from "../../types";
 import { useLogoutMutation } from "../../app/api/eshopApi";
@@ -9,6 +9,8 @@ interface UserProfileProps {
 
 const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
   const [logout, { isLoading }] = useLogoutMutation();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = async () => {
     if (window.confirm("Are you sure you want to log out?")) {
@@ -21,43 +23,92 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
         alert("Failed to log out. Please try again.");
       }
     }
+    setIsDropdownOpen(false);
   };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   if (!user) {
     return null;
   }
 
   return (
-    <div className="flex items-center justify-between gap-4 p-4">
-      <div className="flex items-center gap-3">
-        <div className="flex-shrink-0">
-          <img
-            className="h-10 w-10 rounded-full"
-            src={
-              user.profilePictureUrl ||
-              `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random`
-            }
-            alt={`${user.firstName} ${user.lastName}`}
-          />
-        </div>
-        <div>
-          <p className="text-sm font-medium text-gray-700">
-            {user.firstName} {user.lastName}
-          </p>
-          <p className="text-xs text-gray-500">{user.role}</p>
-        </div>
-      </div>
+    <div className="relative" ref={dropdownRef}>
+      {/* User Avatar Button */}
       <button
-        onClick={handleLogout}
-        disabled={isLoading}
-        className={`p-2 cursor-pointer outline-none text-gray-700 focus:ring-red-500 ${
-          isLoading ? "opacity-50 cursor-not-allowed" : ""
-        }`}
-        title="Log out"
+        onClick={toggleDropdown}
+        className="flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-full"
       >
-        <ArrowRightOnRectangleIcon className="h-6 w-6" aria-hidden="true" />
-        <span className="sr-only">Log out</span>
+        <img
+          className="h-10 w-10 rounded-full cursor-pointer hover:ring-2 hover:ring-blue-300 transition-all duration-200"
+          src={
+            user.profilePictureUrl ||
+            `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random`
+          }
+          alt={`${user.firstName} ${user.lastName}`}
+        />
       </button>
+
+      {/* Dropdown Menu */}
+      {isDropdownOpen && (
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+          <div className="py-1">
+            {/* User Info */}
+            <div className="px-4 py-3 border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                <img
+                  className="h-8 w-8 rounded-full"
+                  src={
+                    user.profilePictureUrl ||
+                    `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random`
+                  }
+                  alt={`${user.firstName} ${user.lastName}`}
+                />
+                <div>
+                  <p className="text-sm font-medium text-gray-900">
+                    {user.firstName} {user.lastName}
+                  </p>
+                  <p className="text-xs text-gray-500">{user.role}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Logout Button */}
+            <button
+              onClick={handleLogout}
+              disabled={isLoading}
+              className={`flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition-colors duration-150 ${
+                isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+              }`}
+            >
+              <ArrowRightOnRectangleIcon
+                className="h-4 w-4 mr-3"
+                aria-hidden="true"
+              />
+              {isLoading ? "Logging out..." : "Log out"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

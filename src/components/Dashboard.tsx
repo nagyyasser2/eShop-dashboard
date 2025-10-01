@@ -69,7 +69,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="bg-gray-50  pt-0">
-      <div className="max-w-7xl mx-auto">
+      <div className=" mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           {statsCards.map((card, index) => {
             const IconComponent = card.icon;

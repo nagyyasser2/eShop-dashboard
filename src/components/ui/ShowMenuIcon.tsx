@@ -2,19 +2,13 @@ import React from "react";
 
 interface ShowMenuIconProps {
   toggleSidebar: () => void;
-  sidebarOpen: boolean;
 }
 
-const ShowMenuIcon: React.FC<ShowMenuIconProps> = ({
-  toggleSidebar,
-  sidebarOpen,
-}) => {
-  if (sidebarOpen) return null; // Hide button when sidebar is open
-
+const ShowMenuIcon: React.FC<ShowMenuIconProps> = ({ toggleSidebar }) => {
   return (
     <button
       onClick={toggleSidebar}
-      className="md:hidden block top-4 z-50 p-1 mb-2 ml-3 cursor-pointer rounded-md bg-white text-gray-800 hover:bg-gray-100 transition-colors duration-200"
+      className="p-1 cursor-pointer rounded-md bg-white text-gray-800 hover:bg-gray-100 transition-colors duration-200"
       aria-label="Open sidebar"
     >
       <svg

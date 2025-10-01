@@ -3,7 +3,7 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import { authApi } from "./api/authApi";
 import { productsApi } from "./api/productsApi";
 import { ordersApi } from "./api/ordersApi";
-import { customersApi } from "./api/customersApi";
+import { usersApi } from "./api/usersApi";
 import { dashboardApi } from "./api/dashboardApi";
 import authReducer from "../features/auth/authSlice";
 import productsReducer from "../features/products/productsSlice";
@@ -17,7 +17,7 @@ export const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
     [ordersApi.reducerPath]: ordersApi.reducer,
-    [customersApi.reducerPath]: customersApi.reducer,
+    [usersApi.reducerPath]: usersApi.reducer,
     [dashboardApi.reducerPath]: dashboardApi.reducer,
     [categoriesApi.reducerPath]: categoriesApi.reducer,
     [bannersApi.reducerPath]: bannersApi.reducer,
@@ -30,7 +30,7 @@ export const store = configureStore({
       authApi.middleware,
       productsApi.middleware,
       ordersApi.middleware,
-      customersApi.middleware,
+      usersApi.middleware,
       dashboardApi.middleware,
       categoriesApi.middleware,
       bannersApi.middleware,

@@ -5,14 +5,9 @@ import {
   UsersIcon,
   CogIcon,
   TagIcon,
-  TicketIcon,
-  ShieldCheckIcon,
-  CreditCardIcon,
   FlagIcon,
-  PercentBadgeIcon,
 } from "@heroicons/react/24/outline";
 import type { User } from "../../types";
-import UserProfile from "../ui/UserProfile";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -25,14 +20,22 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
 
   const navItems = [
     {
+      name: "Orders",
+      path: "/orders",
+      icon: ShoppingBagIcon,
+      roles: ["admin", "manager", "user"],
+      iconColor: "text-blue-600",
+    },
+    {
       name: "Products",
       path: "/products",
       icon: ShoppingBagIcon,
       roles: ["admin", "manager"],
       iconColor: "text-green-600",
     },
+
     {
-      name: "Categories",
+      name: "Catalog",
       path: "/categories",
       icon: TagIcon,
       roles: ["admin", "manager"],
@@ -46,22 +49,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
       iconColor: "text-yellow-600",
     },
     {
-      name: "Orders",
-      path: "/orders",
-      icon: ShoppingBagIcon,
-      roles: ["admin", "manager", "user"],
-      iconColor: "text-blue-600",
-    },
-    {
-      name: "Payments",
-      path: "/payments",
-      icon: CreditCardIcon,
-      roles: ["admin", "manager"],
-      iconColor: "text-yellow-600",
-    },
-    {
-      name: "Customers",
-      path: "/customers",
+      name: "Users",
+      path: "/users",
       icon: UsersIcon,
       roles: ["admin", "manager"],
       iconColor: "text-purple-600",
@@ -75,22 +64,31 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
     },
   ];
 
+  const handleNavClick = () => {
+    // Only close sidebar on mobile (when it's an overlay)
+    if (window.innerWidth < 768 && toggleSidebar) {
+      toggleSidebar();
+    }
+  };
+
   return (
     <div
       className={`${
-        isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-      } fixed md:static inset-y-0 left-0 z-30 w-64 bg-zinc-50 shadow-lg transition-transform duration-50 ease-in-out shadow-md shadow-green-900/20`}
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      } md:translate-x-0 md:relative fixed inset-y-0 left-0 z-30 w-64 bg-opacity-50 backdrop-blur-sm transition-opacity duration-150 bg-white  ease-in-out  ${
+        !isOpen ? "md:hidden opacity-100 pointer-events-auto" : ""
+      }`}
     >
       <div className="flex flex-col h-full">
         {/* Sidebar Header */}
-        <div className="flex items-center gap-2 px-8 py-2 pt-5">
+        <div className="flex items-center gap-2 px-8 py-4 pt-6  text-emerald-700 ">
           <img src="/icon.svg" alt="Icon" width="30" />
           <Link
             to="/"
-            className="text-2xl font-extrabold tracking-wide text-gray-800 underline"
-            onClick={toggleSidebar}
+            className="text-xl font-bold tracking-wide text-gray-800 "
+            onClick={handleNavClick}
           >
-            eShop
+            ShopHub
           </Link>
         </div>
 
@@ -99,12 +97,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
           <nav className="px-4 py-3">
             <ul className="space-y-2">
               {navItems.map((item) => (
-                <li key={item.path} onClick={toggleSidebar}>
+                <li key={item.path}>
                   <Link
                     to={item.path}
+                    onClick={handleNavClick}
                     className={`flex items-center px-4 py-3 rounded-lg ${
                       location.pathname.startsWith(item.path)
-                        ? "bg-green-50 text-green-600"
+                        ? "bg-gray-50 text-green-600"
                         : "text-gray-700 hover:bg-gray-100"
                     }`}
                   >
@@ -115,7 +114,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
                           : item.iconColor
                       }`}
                     />
-                    <span className="hover:underline font-bold">
+                    <span className="hover:underline font-semibold">
                       {item.name}
                     </span>
                   </Link>
@@ -124,9 +123,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, user, toggleSidebar }) => {
             </ul>
           </nav>
         </div>
-
-        {/* Sidebar Footer */}
-        {user && <UserProfile user={user} />}
       </div>
     </div>
   );

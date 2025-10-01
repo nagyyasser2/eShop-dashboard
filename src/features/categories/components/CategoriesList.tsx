@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import CategoriesListItem from "./CategoriesListItem";
 import {
   useGetCategoriesTreeQuery,
@@ -18,12 +18,12 @@ const flattenCategories = (
     const categoryDto: CategoryDto = {
       id: category.id,
       name: category.name,
-      description: category.description || "", // Not included in CategoryTreeDto
-      imageUrls: [], // Not included in CategoryTreeDto
+      description: category.description || "",
+      imageUrls: [],
       isActive: category.isActive,
       sortOrder: category.sortOrder,
-      createdAt: "", // Not included, set empty string or fetch if needed
-      parentCategoryId: undefined, // Set appropriately if needed
+      createdAt: "",
+      parentCategoryId: undefined,
       parentCategoryName: parentName,
       childCategories: category.children
         ? category.children.map((child) => ({
@@ -36,14 +36,13 @@ const flattenCategories = (
             createdAt: "",
             parentCategoryId: undefined,
             parentCategoryName: category.name,
-            childCategories: [], // Nested children will be handled in flattenCategories
+            childCategories: [],
             productCount: 0,
           }))
         : [],
-      productCount: 0, // Not included in CategoryTreeDto, set to 0 or fetch if needed
+      productCount: 0,
     };
 
-    // Add current category and recursively flatten its children
     return [
       ...acc,
       categoryDto,
@@ -52,14 +51,12 @@ const flattenCategories = (
   }, []);
 };
 
-const CategoriesList = ({ openModal }: { openModal: () => void }) => {
+const CategoriesList: React.FC = () => {
   const { data: categoryTree, isLoading, error } = useGetCategoriesTreeQuery();
-
   const [deleteCategory, { isLoading: isDeleting }] =
     useDeleteCategoryMutation();
   const navigate = useNavigate();
 
-  // Flatten the category tree into a list of CategoryDto
   const categories = categoryTree ? flattenCategories(categoryTree) : [];
 
   const handleEdit = (id: number) => {
@@ -98,61 +95,44 @@ const CategoriesList = ({ openModal }: { openModal: () => void }) => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto bg-white shadow-lg rounded-lg p-6 border border-gray-200">
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-700">Categories</h2>
-          <p className="text-sm text-gray-500">
-            View and manage categories here.
-          </p>
-        </div>
-        <button
-          onClick={openModal}
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200 cursor-pointer"
-        >
-          + Create Category
-        </button>
-      </div>
-
+    <div className="overflow-x-auto">
       {categories?.length === 0 ? (
         <p className="text-gray-500 text-center">No categories found.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Description
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {categories?.map((category) => (
-                <CategoriesListItem
-                  key={category.id}
-                  id={category.id}
-                  name={category.name}
-                  description={category.description}
-                  imageUrls={category.imageUrls}
-                  productCount={category.productCount}
-                  subCategoryCount={category.childCategories?.length || 0}
-                  isActive={category.isActive}
-                  onEdit={() => handleEdit(category.id)}
-                  onDelete={() => handleDelete(category.id)}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Name
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Description
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {categories?.map((category) => (
+              <CategoriesListItem
+                key={category.id}
+                id={category.id}
+                name={category.name}
+                description={category.description}
+                imageUrls={category.imageUrls}
+                productCount={category.productCount}
+                subCategoryCount={category.childCategories?.length || 0}
+                isActive={category.isActive}
+                onEdit={() => handleEdit(category.id)}
+                onDelete={() => handleDelete(category.id)}
+              />
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );
