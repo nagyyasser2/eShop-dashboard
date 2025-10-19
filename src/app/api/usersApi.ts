@@ -1,29 +1,21 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL } from "../../utils/constants";
-
-// Types
-export interface UserDto {
-  id: string;
-  firstName: string;
-  email: string;
-  emailConfirmed: boolean;
-  roles: string[];
-}
+import type { ApplicationUser } from "../../types/auth.types";
 
 export interface GetUsersResponse {
-  users: UserDto[];
-  page: number;
-  pageSize: number;
-  totalCount: number;
+  Users: ApplicationUser[];
+  Page: number;
+  PageSize: number;
+  TotalCount: number;
 }
 
 export interface GetUsersParams {
-  page?: number;
-  pageSize?: number;
+  Page?: number;
+  PageSize?: number;
 }
 
 export interface AssignRolesRequest {
-  roles: string[];
+  Roles: string[];
 }
 
 export const usersApi = createApi({
@@ -45,21 +37,24 @@ export const usersApi = createApi({
       query: (params) => ({
         url: "/users",
         params: {
-          page: params?.page || 1,
-          pageSize: params?.pageSize || 10,
+          Page: params?.Page || 1,
+          PageSize: params?.PageSize || 10,
         },
       }),
       providesTags: (result) =>
         result
           ? [
-              ...result.users.map(({ id }) => ({ type: "User" as const, id })),
+              ...result.Users.map(({ Id }) => ({
+                type: "User" as const,
+                id: Id,
+              })),
               { type: "User", id: "LIST" },
             ]
           : [{ type: "User", id: "LIST" }],
     }),
 
     // GET: api/users/{id}
-    getUser: builder.query<UserDto, string>({
+    getUser: builder.query<ApplicationUser, string>({
       query: (id) => `/users/${id}`,
       providesTags: (result, error, id) => [{ type: "User", id }],
     }),

@@ -1,8 +1,9 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { Product } from "../../types";
+import type { ProductDto } from "../../types/products.types";
+import type { RootState } from "../../app/store";
 
 interface ProductsState {
-  selectedProduct: Product | null;
+  currentProduct: ProductDto;
   searchQuery: string;
   filters: {
     category: string;
@@ -12,7 +13,32 @@ interface ProductsState {
 }
 
 const initialState: ProductsState = {
-  selectedProduct: null,
+  currentProduct: {
+    Id: 0,
+    Name: "",
+    Sku: "",
+    Price: 0,
+    StockQuantity: 0,
+    TrackQuantity: false,
+    IsActive: false,
+    IsFeatured: false,
+    Weight: 0,
+    CreatedAt: "",
+    ProductImages: [],
+    ShortDescription: "",
+    ComparePrice: 0,
+    Dimensions: "",
+    Tags: "",
+    CategoryId: 0,
+    Category: {
+      Id: 0,
+      Name: "",
+      ImageUrls: [],
+      IsActive: false,
+      SortOrder: 0,
+      CreatedAt: "",
+    },
+  },
   searchQuery: "",
   filters: {
     category: "all",
@@ -25,8 +51,8 @@ const productsSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    setSelectedProduct(state, action: PayloadAction<Product | null>) {
-      state.selectedProduct = action.payload;
+    setCurrentProduct(state, action: PayloadAction<ProductDto>) {
+      state.currentProduct = action.payload;
     },
     setSearchQuery(state, action: PayloadAction<string>) {
       state.searchQuery = action.payload;
@@ -47,12 +73,15 @@ const productsSlice = createSlice({
 });
 
 export const {
-  setSelectedProduct,
+  setCurrentProduct,
   setSearchQuery,
   setCategoryFilter,
   setPriceRangeFilter,
   setInStockFilter,
   resetFilters,
 } = productsSlice.actions;
+
+export const selectCurrentProduct = (state: RootState) =>
+  state.products.currentProduct;
 
 export default productsSlice.reducer;

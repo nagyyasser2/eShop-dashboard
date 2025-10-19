@@ -13,8 +13,10 @@ interface OrderItemActionsProps {
 export default function OrderItemActions({ item }: OrderItemActionsProps) {
   const [updateOrderItemQuantity, { isLoading: isUpdating }] =
     useUpdateOrderItemQuantityMutation();
+
   const [deleteOrderItem, { isLoading: isDeleting }] =
     useDeleteOrderItemMutation();
+
   const [pendingAction, setPendingAction] = useState<
     "increment" | "decrement" | "delete" | null
   >(null);
@@ -28,11 +30,10 @@ export default function OrderItemActions({ item }: OrderItemActionsProps) {
     try {
       console.log("Incrementing quantity for item:", item);
       await updateOrderItemQuantity({
-        id: item.id,
-        quantity: item.quantity + 1,
-        orderId: item.orderId,
-        productId: item.productId,
-        productVariantId: item.productVariantId,
+        Id: item.Id,
+        Quantity: item.Quantity + 1,
+        OrderId: item.OrderId,
+        ProductId: item.ProductId,
       }).unwrap();
     } catch (error) {
       console.error("Failed to increment quantity:", error);
@@ -42,17 +43,16 @@ export default function OrderItemActions({ item }: OrderItemActionsProps) {
   };
 
   const handleDecrement = async () => {
-    if (item.quantity <= 1 || isLoading) return;
+    if (item.Quantity <= 1 || isLoading) return;
 
     setPendingAction("decrement");
     try {
       console.log("Decrementing quantity for item:", item);
       await updateOrderItemQuantity({
-        id: item.id,
-        quantity: item.quantity - 1,
-        orderId: item.orderId,
-        productId: item.productId,
-        productVariantId: item.productVariantId,
+        Id: item.Id,
+        Quantity: item.Quantity - 1,
+        OrderId: item.OrderId,
+        ProductId: item.ProductId,
       }).unwrap();
     } catch (error) {
       console.error("Failed to decrement quantity:", error);
@@ -71,7 +71,7 @@ export default function OrderItemActions({ item }: OrderItemActionsProps) {
     setPendingAction("delete");
     try {
       // Pass both id and orderId for proper cache invalidation
-      await deleteOrderItem({ id: item.id, orderId: item.orderId }).unwrap();
+      await deleteOrderItem({ id: item.Id, orderId: item.OrderId }).unwrap();
       setPendingAction(null);
     } catch (error) {
       console.error("Failed to delete order item:", error);
@@ -99,7 +99,7 @@ export default function OrderItemActions({ item }: OrderItemActionsProps) {
     hover:bg-amber-100 hover:border-amber-300
     focus:ring-amber-300
     disabled:hover:bg-amber-50 disabled:hover:border-amber-200
-    ${item.quantity <= 1 ? "opacity-40 cursor-not-allowed" : ""}
+    ${item.Quantity <= 1 ? "opacity-40 cursor-not-allowed" : ""}
   `;
 
   const deleteClass = `
@@ -126,15 +126,15 @@ export default function OrderItemActions({ item }: OrderItemActionsProps) {
       </button>
 
       <span className="mx-2 px-2 py-1 text-sm font-semibold text-gray-700 bg-gray-100 rounded">
-        {item.quantity}
+        {item.Quantity}
       </span>
 
       <button
         onClick={handleDecrement}
-        disabled={isLoading || item.quantity <= 1}
+        disabled={isLoading || item.Quantity <= 1}
         className={decrementClass}
         title={
-          item.quantity <= 1 ? "Cannot decrease below 1" : "Decrease quantity"
+          item.Quantity <= 1 ? "Cannot decrease below 1" : "Decrease quantity"
         }
       >
         {pendingAction === "decrement" ? (

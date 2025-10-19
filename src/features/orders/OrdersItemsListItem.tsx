@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { OrderItem } from "../../types/orders.types";
 import OrderItemActions from "./OrderItemActions";
 
@@ -20,11 +19,11 @@ export default function OrdersItemsListItem({
       <div className="flex items-center space-x-3">
         <div className={`transition-opacity duration-200 `}>
           <p className="text-sm font-medium text-gray-900">
-            {item.productName}
+            {item.ProductName}
           </p>
           <p className="text-xs text-gray-500">
-            {item.quantity} × ${item.unitPrice.toFixed(2)} = $
-            {(item.quantity * item.unitPrice).toFixed(2)}
+            {item.Quantity} × ${item.UnitPrice.toFixed(2)} = $
+            {(item.Quantity * item.UnitPrice).toFixed(2)}
           </p>
         </div>
       </div>

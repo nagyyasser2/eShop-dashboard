@@ -3,106 +3,64 @@ import type {
   CreateProductDto,
   UpdateProductDto,
   ProductDto,
-  UpdateVariantDto,
-} from "../../types/index";
+} from "../../types/products.types";
 import { API_BASE_URL } from "../../utils/constants";
 
 // Helper function to create FormData for product DTOs
 const createProductFormData = (
-  product: CreateProductDto | UpdateProductDto | any
+  product: CreateProductDto | UpdateProductDto
 ): FormData => {
   const formData = new FormData();
 
-  // Common fields for both CreateProductDto and UpdateProductDto
-  formData.append("Id", product.id);
-  formData.append("Name", product.name);
-  formData.append("SKU", product.sku);
-  formData.append("Price", product.price);
-  formData.append("StockQuantity", product.stockQuantity);
-  formData.append("TrackQuantity", product.trackQuantity);
-  formData.append("IsActive", product.isActive);
-  formData.append("IsFeatured", product.isFeatured);
-  formData.append("Weight", product.weight);
+  formData.append("Name", product.Name);
+  formData.append("Sku", product.Sku);
+  formData.append("Price", String(product.Price));
+  formData.append("StockQuantity", String(product.StockQuantity));
+  formData.append("CategoryId", String(product.CategoryId));
 
-  if (product.description) {
-    formData.append("Description", product.description);
-  }
-  if (product.shortDescription) {
-    formData.append("ShortDescription", product.shortDescription);
-  }
-  if (product.comparePrice) {
-    formData.append("ComparePrice", product.comparePrice);
-  }
-  if (product.dimensions) {
-    formData.append("Dimensions", product.dimensions);
-  }
-  if (product.tags) {
-    formData.append("Tags", product.tags);
-  }
-  if (product.categoryId) {
-    formData.append("CategoryId", product.categoryId);
-  }
+  if (product.Id) formData.append("Id", String(product.Id));
+  if (product.Description) formData.append("Description", product.Description);
+  if (product.ShortDescription)
+    formData.append("ShortDescription", product.ShortDescription);
+  if (product.ComparePrice != null)
+    formData.append("ComparePrice", String(product.ComparePrice));
+  if (product.TrackQuantity != null)
+    formData.append("TrackQuantity", String(product.TrackQuantity));
+  if (product.IsActive != null)
+    formData.append("IsActive", String(product.IsActive));
+  if (product.IsFeatured != null)
+    formData.append("IsFeatured", String(product.IsFeatured));
+  if (product.Weight != null) formData.append("Weight", String(product.Weight));
+  if (product.Dimensions) formData.append("Dimensions", product.Dimensions);
+  if (product.Tags) formData.append("Tags", product.Tags);
 
-  // Handle images (for CreateProductDto)
-  if ("images" in product && product.images && product.images.length > 0) {
-    product.images.forEach((file: any) => {
-      formData.append("Images", file); // No array indexing
-    });
-  }
+  // ProductImages
+  let imageIndex = 0;
+  product.ProductImages?.forEach((img) => {
+    if (img.IsDeletable) {
+      // Send deleted images with Id and Path for backend to handle deletion
+      if (img.Id)
+        formData.append(`ProductImages[${imageIndex}].Id`, String(img.Id));
+      if (img.Path)
+        formData.append(`ProductImages[${imageIndex}].Path`, img.Path);
+      formData.append(`ProductImages[${imageIndex}].IsDeletable`, String(true));
+      imageIndex++;
+    } else {
+      // Send active images normally
+      if (img.File)
+        formData.append(`ProductImages[${imageIndex}].File`, img.File);
+      if (img.Id)
+        formData.append(`ProductImages[${imageIndex}].Id`, String(img.Id));
+      formData.append(
+        `ProductImages[${imageIndex}].IsPrimary`,
+        String(img.IsPrimary ?? false)
+      );
+      imageIndex++;
+    }
+  });
 
-  // Handle new images and image deletions (for UpdateProductDto)
-  if (
-    "newImages" in product &&
-    product.newImages &&
-    product.newImages.length > 0
-  ) {
-    product.newImages.forEach((file: any) => {
-      formData.append("NewImages", file); // No array indexing
-    });
-  }
-  if (
-    "imageIdsToDelete" in product &&
-    product.imageIdsToDelete &&
-    product.imageIdsToDelete.length > 0
-  ) {
-    product.imageIdsToDelete.forEach((id: any) => {
-      formData.append("ImageIdsToDelete", id); // No array indexing
-    });
-  }
-
-  // Handle variants
-  if (product.variants && product.variants.length > 0) {
-    product.variants.forEach((variant: any, index: number) => {
-      if (variant.id !== undefined && variant.id !== null) {
-        formData.append(`Variants[${index}].Id`, variant.id);
-      }
-      if (variant.sku) {
-        formData.append(`Variants[${index}].SKU`, variant.sku);
-      }
-      if (variant.price !== undefined && variant.price !== null) {
-        formData.append(`Variants[${index}].Price`, variant.price);
-      }
-      if (variant.stockQuantity !== undefined) {
-        formData.append(
-          `Variants[${index}].StockQuantity`,
-          variant.stockQuantity
-        );
-      }
-      if (variant.isActive !== undefined) {
-        formData.append(`Variants[${index}].IsActive`, variant.isActive);
-      }
-      if (variant.color) {
-        formData.append(`Variants[${index}].Color`, variant.color);
-      }
-      if (variant.size) {
-        formData.append(`Variants[${index}].Size`, variant.size);
-      }
-    });
-  }
-
-  // Debug FormData
   for (const [key, value] of formData.entries()) {
-    console.log(`${key}:`, value instanceof File ? value.name : value);
+    console.log(key, value);
   }
 
   return formData;
@@ -122,12 +80,24 @@ export const productsApi = createApi({
   }),
   tagTypes: ["Product"],
   endpoints: (builder) => ({
-    createProduct: builder.mutation<ProductDto, CreateProductDto>({
-      query: (product) => ({
+    createProduct: builder.mutation<ProductDto, FormData>({
+      query: (formData) => ({
         url: "products",
         method: "POST",
-        body: createProductFormData(product),
+        body: formData,
       }),
+      invalidatesTags: ["Product"],
+    }),
+
+    updateProduct: builder.mutation<ProductDto, FormData>({
+      query: (formData) => {
+        const id = formData.get("Id");
+        return {
+          url: `products/${id}`,
+          method: "PUT",
+          body: formData,
+        };
+      },
       invalidatesTags: ["Product"],
     }),
 
@@ -158,58 +128,12 @@ export const productsApi = createApi({
       providesTags: (result, error, id) => [{ type: "Product", id }],
     }),
 
-    updateProduct: builder.mutation<ProductDto, UpdateProductDto>({
-      query: (product) => ({
-        url: `products/${product.id}`,
-        method: "PUT",
-        body: createProductFormData(product),
-      }),
-      invalidatesTags: (result, error, { id }) => [
-        { type: "Product", id },
-        "Product",
-      ],
-    }),
-
     deleteProduct: builder.mutation<void, number>({
       query: (id) => ({
         url: `products/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Product"],
-    }),
-
-    toggleProductStatus: builder.mutation<void, number>({
-      query: (id) => ({
-        url: `products/${id}/toggle-status`,
-        method: "PATCH",
-      }),
-      invalidatesTags: (result, error, id) => [
-        { type: "Product", id },
-        "Product",
-      ],
-    }),
-
-    toggleProductFeatured: builder.mutation<void, number>({
-      query: (id) => ({
-        url: `products/${id}/toggle-featured`,
-        method: "PATCH",
-      }),
-      invalidatesTags: (result, error, id) => [
-        { type: "Product", id },
-        "Product",
-      ],
-    }),
-
-    updateStock: builder.mutation<void, { id: number; quantity: number }>({
-      query: ({ id, quantity }) => ({
-        url: `products/${id}/stock`,
-        method: "PATCH",
-        body: { quantity },
-      }),
-      invalidatesTags: (result, error, { id }) => [
-        { type: "Product", id },
-        "Product",
-      ],
     }),
   }),
 });
@@ -220,9 +144,6 @@ export const {
   useGetProductByIdQuery,
   useUpdateProductMutation,
   useDeleteProductMutation,
-  useToggleProductStatusMutation,
-  useToggleProductFeaturedMutation,
-  useUpdateStockMutation,
 } = productsApi;
 
 // Export utility functions

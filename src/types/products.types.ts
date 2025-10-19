@@ -1,45 +1,107 @@
-import type { Category } from "./categories.types";
+import type { Category, CategoryDto } from "./categories.types";
 
 export interface Product {
-  id: number;
-  name: string;
-  description?: string;
-  shortDescription?: string;
-  sku: string;
-  price: number;
-  comparePrice?: number;
-  stockQuantity: number;
-  trackQuantity: boolean;
-  isActive: boolean;
-  isFeatured: boolean;
-  weight: number;
-  dimensions?: string;
-  tags?: string;
-  createdAt: string;
-  categoryId?: number;
-  category?: Category;
-  images?: Image[];
-  variants?: Variant[];
+  Id: number;
+  Name: string;
+  Description?: string;
+  ShortDescription?: string;
+  Sku: string;
+  Price: number;
+  ComparePrice?: number;
+  StockQuantity: number;
+  TrackQuantity: boolean;
+  IsActive: boolean;
+  IsFeatured: boolean;
+  Weight: number;
+  Dimensions?: string;
+  Tags?: string;
+  CreatedAt: string;
+  CategoryId?: number;
+  Category?: Category;
+  ProductImages?: ProductImageDto[];
 }
 
-// Variant
-export interface Variant {
-  id: number;
-  sku: string;
-  price?: number;
-  stockQuantity: number;
-  isActive: boolean;
-  color: string;
-  size: string;
-  createdAt: string;
-  productId: number;
-  product?: Product;
+export interface CreateProductDto {
+  Id?: number;
+  Name: string;
+  Description?: string;
+  ShortDescription?: string;
+  Sku: string;
+  Price: number;
+  ComparePrice?: number;
+  StockQuantity: number;
+  TrackQuantity?: boolean;
+  IsActive?: boolean;
+  IsFeatured?: boolean;
+  Weight?: number;
+  Dimensions?: string;
+  Tags?: string;
+  CategoryId: number;
+  ProductImages?: CreateProductImageDto[];
 }
 
-// Image
-export interface Image {
-  id: number;
-  url: string;
-  altText?: string;
-  productId: number;
+export interface ProductImageDto {
+  Id: number;
+  Path: string;
+  IsPrimary: boolean;
+  CreatedAt: Date;
+  ProductId: number;
+}
+
+export interface CreateProductImageDto {
+  Id?: number;
+  File: File;
+  Path?: string;
+  IsPrimary: boolean;
+  IsDeletable?: boolean;
+}
+
+export interface UpdateProductImageDto
+  extends Omit<ProductImageDto, "IsPrimary" | "Path">,
+    Partial<CreateProductImageDto> {
+  Id: number;
+  File?: File;
+  Path?: string;
+  IsPrimary: boolean;
+  IsDeletable: boolean;
+}
+
+export interface UpdateProductDto {
+  Id: number;
+  Name: string;
+  Description: string;
+  ShortDescription: string;
+  Sku: string;
+  Price: number;
+  ComparePrice: number;
+  StockQuantity: number;
+  TrackQuantity: boolean;
+  IsActive: boolean;
+  IsFeatured: boolean;
+  Weight: number;
+  Dimensions: string;
+  Tags: string;
+  CategoryId: number;
+  ProductImages: UpdateProductImageDto[];
+}
+
+export interface ProductDto {
+  Id: number;
+  Name: string;
+  Description?: string;
+  ShortDescription: string;
+  Sku: string;
+  Price: number;
+  ComparePrice: number;
+  StockQuantity: number;
+  TrackQuantity: boolean;
+  IsActive: boolean;
+  IsFeatured: boolean;
+  Weight: number;
+  Dimensions: string;
+  Tags: string;
+  CreatedAt: string;
+  CategoryId: number;
+  Category: CategoryDto;
+  ProductImages: ProductImageDto[];
 }

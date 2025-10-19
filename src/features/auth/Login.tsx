@@ -4,11 +4,13 @@ import { LockClosedIcon } from "@heroicons/react/24/outline";
 import { useLoginMutation } from "../../app/api/eshopApi";
 import { useAppDispatch } from "../../app/hooks";
 import { setCredentials } from "./authSlice";
+import type { AuthResponse } from "../../types/auth.types";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -19,8 +21,19 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const userData = await login({ email, password }).unwrap();
+      const userData: AuthResponse = await login({
+        Email: email,
+        Password: password,
+      }).unwrap();
+
+      // ✅ store response (Token + User)
       dispatch(setCredentials(userData));
+
+      // ✅ persist token if rememberMe is checked
+      if (rememberMe) {
+        localStorage.setItem("token", userData.Data.Token);
+      }
+
       navigate(from, { replace: true });
     } catch (err) {
       console.error("Login failed:", err);

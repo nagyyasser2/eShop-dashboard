@@ -8,10 +8,13 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, roles }) => {
-  const location = useLocation();
-  const { user } = useAppSelector((state) => state.auth);
+  const { User } = useAppSelector((state) => state.auth);
 
-  if (roles && user && !roles.includes(user.role)) {
+  if (
+    roles &&
+    User &&
+    !roles.includes(User.Roles.find((role) => roles.includes(role)) || "")
+  ) {
     return <Navigate to="/" replace />;
   }
 

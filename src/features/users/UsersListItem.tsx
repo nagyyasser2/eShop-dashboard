@@ -1,10 +1,11 @@
 import React from "react";
-import { useDeleteUserMutation, type UserDto } from "../../app/api/usersApi";
+import { useDeleteUserMutation } from "../../app/api/usersApi";
 import { TrashIcon, EyeIcon } from "@heroicons/react/24/outline";
+import type { ApplicationUser } from "../../types/auth.types";
 
 interface UsersListItemProps {
-  user: UserDto;
-  onView: (user: UserDto) => void;
+  user: ApplicationUser;
+  onView: (user: ApplicationUser) => void;
 }
 
 const UsersListItem: React.FC<UsersListItemProps> = ({ user, onView }) => {
@@ -12,13 +13,13 @@ const UsersListItem: React.FC<UsersListItemProps> = ({ user, onView }) => {
 
   const handleDelete = async () => {
     const confirmed = window.confirm(
-      `Are you sure you want to delete user "${user.firstName}" (${user.email})? This action cannot be undone.`
+      `Are you sure you want to delete user "${user.FirstName}" (${user.Email})? This action cannot be undone.`
     );
 
     if (!confirmed) return;
 
     try {
-      await deleteUser(user.id).unwrap();
+      await deleteUser(user.Id).unwrap();
     } catch (error) {
       console.error("Failed to delete user:", error);
       alert("Failed to delete user. Please try again.");
@@ -29,26 +30,26 @@ const UsersListItem: React.FC<UsersListItemProps> = ({ user, onView }) => {
     <tr className="hover:bg-gray-50">
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="text-sm font-medium text-gray-900">
-          {user.firstName}
+          {user.FirstName}
         </div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-700">{user.email}</div>
+        <div className="text-sm text-gray-700">{user.Email}</div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <span
           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-            user.emailConfirmed
+            user.EmailConfirmed
               ? "bg-green-100 text-green-800"
               : "bg-yellow-100 text-yellow-800"
           }`}
         >
-          {user.emailConfirmed ? "Verified" : "Unverified"}
+          {user.EmailConfirmed ? "Verified" : "Unverified"}
         </span>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex gap-1 flex-wrap">
-          {user.roles.map((role) => (
+          {user.Roles.map((role) => (
             <span
               key={role}
               className="px-2 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800"

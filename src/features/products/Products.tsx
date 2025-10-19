@@ -1,6 +1,6 @@
 import React from "react";
 import { ShoppingBagIcon } from "@heroicons/react/24/outline";
-import ProductsList from "./components/ProductsList";
+import ProductsList from "./ProductsList";
 import { Link } from "react-router-dom";
 
 const Products: React.FC = () => {
@@ -18,9 +18,9 @@ const Products: React.FC = () => {
           <div className="ml-auto">
             <Link
               to="/products/create"
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200 cursor-pointer"
+              className="inline-block text-center bg-green-600 font-normal text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200 cursor-pointer"
             >
-              + Create Product
+              + New
             </Link>
           </div>
         </div>

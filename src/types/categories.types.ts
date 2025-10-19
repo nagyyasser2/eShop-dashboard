@@ -1,15 +1,35 @@
 import type { Product } from "./products.types";
 
 export interface Category {
-  id: number;
-  name: string;
-  description?: string;
-  imageUrls: string[];
-  isActive: boolean;
-  sortOrder: number;
-  createdAt: string;
-  parentCategoryId?: number;
-  parentCategory?: Category;
-  childCategories?: Category[];
-  products?: Product[];
+  Id: number;
+  Name: string;
+  Description?: string;
+  ImageUrls: string[];
+  IsActive: boolean;
+  SortOrder: number;
+  CreatedAt: string;
+  Products?: Product[];
 }
+
+export interface CreateCategoryDto {
+  Name: string;
+  Description?: string;
+  ImageUrls?: string[];
+  IsActive?: boolean;
+  SortOrder?: number;
+  ImageFiles?: File[];
+  imageUrlsToRemove?: string[];
+}
+
+export interface UpdateCategoryDto {
+  Id: number;
+  Name: string;
+  Description?: string;
+  ImageUrls?: string[];
+  IsActive?: boolean;
+  SortOrder?: number;
+  ImageFiles?: File[];
+  imageUrlsToRemove?: string[];
+}
+
+export interface CategoryDto extends Category {}

@@ -1,59 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL } from "../../utils/constants";
-
-// Enum for BannerPosition (matching eShopApi.Core.Enums.BannerPosition)
-export type BannerPosition = "HomepageTop" | "HomepageMiddle" | "Footer";
-
-export const BannerPosition = {
-  HomepageTop: "HomepageTop",
-  HomepageMiddle: "HomepageMiddle",
-  Footer: "Footer",
-} as const;
-
-// Interface for BannerResponseDto
-export interface BannerResponseDto {
-  id: number;
-  title: string;
-  description?: string;
-  imageUrl: string;
-  linkUrl?: string;
-  buttonText?: string;
-  position: BannerPosition;
-  isActive: boolean;
-  sortOrder: number;
-  startDate: string;
-  endDate?: string;
-  createdAt: string;
-}
-
-// Interface for BannerCreateDto (using FormData for file upload)
-export interface BannerCreateDto {
-  title: string;
-  description?: string;
-  image: File;
-  linkUrl?: string;
-  buttonText?: string;
-  position: BannerPosition;
-  isActive?: boolean;
-  sortOrder?: number;
-  startDate?: string;
-  endDate?: string;
-}
-
-// Interface for BannerUpdateDto
-export interface BannerUpdateDto {
-  id: number;
-  title?: string;
-  description?: string;
-  image?: File;
-  linkUrl?: string;
-  buttonText?: string;
-  position?: BannerPosition;
-  isActive?: boolean;
-  sortOrder?: number;
-  startDate?: string;
-  endDate?: string;
-}
+import type { BannerResponseDto } from "../../types/banners.types";
 
 export const bannersApi = createApi({
   reducerPath: "bannersApi",

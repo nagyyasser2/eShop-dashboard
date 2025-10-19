@@ -1,7 +1,7 @@
 import React from "react";
 import ProductItem from "./ProductsItem";
-import { useGetProductsQuery } from "../../../app/api/productsApi";
-import type { ProductDto } from "../../../types";
+import { useGetProductsQuery } from "../../app/api/productsApi";
+import type { ProductDto } from "../../types/products.types";
 
 const ProductsList: React.FC = () => {
   const { data, error, isLoading } = useGetProductsQuery({});
@@ -38,7 +38,7 @@ const ProductsList: React.FC = () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {data.data.map((product: ProductDto) => (
-              <ProductItem key={product.id} product={product} />
+              <ProductItem key={product.Id} product={product} />
             ))}
           </tbody>
         </table>

@@ -1,11 +1,21 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { User, AuthState } from "../../types";
-import { eshopApi } from "../../app/api/eshopApi";
+import { authApi } from "../../app/api/authApi";
+import type { ApplicationUser, AuthResponse } from "../../types/auth.types";
+
+interface AuthState {
+  User: ApplicationUser | null;
+  Token: string | null;
+  RefreshToken: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+}
 
 const initialState: AuthState = {
-  user: null,
-  token: localStorage.getItem("token") || null,
-  isAuthenticated: false,
+  User: null,
+  Token: localStorage.getItem("token") || null,
+  RefreshToken: localStorage.getItem("refreshToken") || null,
+  isAuthenticated: !!localStorage.getItem("token"),
   isLoading: false,
   error: null,
 };
@@ -14,19 +24,25 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setCredentials: (state, action: PayloadAction<{ data: any }>) => {
-      const { data } = action.payload;
+    setCredentials: (state, action: PayloadAction<AuthResponse>) => {
+      const payload = action.payload.Data;
 
-      state.user = data.user;
-      state.token = data.token;
+      state.User = payload.User;
+      state.Token = payload.Token;
+      state.RefreshToken = payload.RefreshToken;
       state.isAuthenticated = true;
-      localStorage.setItem("token", data.token);
+
+      localStorage.setItem("token", payload.Token);
+      localStorage.setItem("refreshToken", payload.RefreshToken);
     },
     clearCredentials: (state) => {
-      state.user = null;
-      state.token = null;
+      state.User = null;
+      state.Token = null;
+      state.RefreshToken = null;
       state.isAuthenticated = false;
+
       localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
     },
     setAuthLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
@@ -37,46 +53,67 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addMatcher(eshopApi.endpoints.login.matchPending, (state) => {
+      // 🔑 LOGIN
+      .addMatcher(authApi.endpoints.login.matchPending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addMatcher(eshopApi.endpoints.login.matchFulfilled, (state, action) => {
+      .addMatcher(authApi.endpoints.login.matchFulfilled, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = true;
-        state.user = action.payload.data.user;
-        state.token = action.payload.data.token;
-        localStorage.setItem("token", action.payload.data.token);
+
+        state.User = action.payload.Data.User;
+        state.Token = action.payload.Data.Token;
+        state.RefreshToken = action.payload.Data.RefreshToken;
+
+        localStorage.setItem("token", action.payload.Data.Token);
+        localStorage.setItem("refreshToken", action.payload.Data.RefreshToken);
       })
-      .addMatcher(eshopApi.endpoints.login.matchRejected, (state, action) => {
+      .addMatcher(authApi.endpoints.login.matchRejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || "Login failed";
       })
-      .addMatcher(eshopApi.endpoints.getUser.matchPending, (state) => {
+
+      // 🔑 GET USER
+      .addMatcher(authApi.endpoints.getUser.matchPending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addMatcher(
-        eshopApi.endpoints.getUser.matchFulfilled,
-        (state, action: any) => {
-          state.isLoading = false;
-          state.user = action.payload.data;
-          state.isAuthenticated = true;
-        }
-      )
-      .addMatcher(eshopApi.endpoints.getUser.matchRejected, (state, action) => {
+      .addMatcher(authApi.endpoints.getUser.matchFulfilled, (state, action) => {
+        state.isLoading = false;
+        state.User = action.payload;
+        state.isAuthenticated = true;
+      })
+      .addMatcher(authApi.endpoints.getUser.matchRejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || "Failed to get user";
-        state.isAuthenticated = false;
-        state.user = null;
-        state.token = null;
-        localStorage.removeItem("token");
+
+        // ✅ If 401 Unauthorized, token is likely expired - clear everything
+        const errorStatus =
+          (action.payload as any)?.status ||
+          (action.meta?.baseQueryMeta as { response?: { status?: number } })
+            ?.response?.status;
+
+        if (errorStatus === 401) {
+          state.User = null;
+          state.Token = null;
+          state.RefreshToken = null;
+          state.isAuthenticated = false;
+
+          localStorage.removeItem("token");
+          localStorage.removeItem("refreshToken");
+        }
       })
-      .addMatcher(eshopApi.endpoints.logout.matchFulfilled, (state) => {
-        state.user = null;
-        state.token = null;
+
+      // 🔑 LOGOUT
+      .addMatcher(authApi.endpoints.logout.matchFulfilled, (state) => {
+        state.User = null;
+        state.Token = null;
+        state.RefreshToken = null;
         state.isAuthenticated = false;
+
         localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
       });
   },
 });

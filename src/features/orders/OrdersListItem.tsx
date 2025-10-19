@@ -1,8 +1,4 @@
-import {
-  PaymentStatus,
-  ShippingStatus,
-  type Order,
-} from "../../types/orders.types";
+import { ShippingStatus, type Order } from "../../types/orders.types";
 import { useState, useEffect } from "react";
 import {
   useUpdateOrderStatusMutation,
@@ -15,6 +11,7 @@ import {
 import OrderUserPopup from "./OrderUserPopup";
 import OrdersItemsPopup from "./OrdersItemsPopup";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import { PaymentStatus } from "../../types/payments.types";
 
 interface OrdersListItemProps {
   order: Order;
@@ -22,10 +19,10 @@ interface OrdersListItemProps {
 
 export default function OrdersListItem({ order }: OrdersListItemProps) {
   const [shippingStatus, setShippingStatus] = useState<ShippingStatus>(
-    getShippingStatusString(order.shippingStatus)
+    getShippingStatusString(order.ShippingStatus)
   );
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>(
-    getPaymentStatusString(order.paymentStatus)
+    getPaymentStatusString(order.PaymentStatus)
   );
 
   const [isOrderUserPopupOpen, setIsOrderUserPopupOpen] = useState(false);
@@ -45,9 +42,9 @@ export default function OrdersListItem({ order }: OrdersListItemProps) {
 
   // Update local state when order prop changes (after API updates)
   useEffect(() => {
-    setShippingStatus(getShippingStatusString(order.shippingStatus));
-    setPaymentStatus(getPaymentStatusString(order.paymentStatus));
-  }, [order.shippingStatus, order.paymentStatus]);
+    setShippingStatus(getShippingStatusString(order.ShippingStatus));
+    setPaymentStatus(getPaymentStatusString(order.PaymentStatus));
+  }, [order.ShippingStatus, order.PaymentStatus]);
 
   // Helpers to get enum values as arrays
   const shippingOptions = Object.values(ShippingStatus);
@@ -62,7 +59,7 @@ export default function OrdersListItem({ order }: OrdersListItemProps) {
 
     try {
       await updateOrderStatus({
-        id: order.id,
+        id: order.Id,
         shippingStatus: value,
         paymentStatus: paymentStatus,
       }).unwrap();
@@ -82,7 +79,7 @@ export default function OrdersListItem({ order }: OrdersListItemProps) {
 
     try {
       await updateOrderStatus({
-        id: order.id,
+        id: order.Id,
         shippingStatus: shippingStatus,
         paymentStatus: value,
       }).unwrap();
@@ -96,14 +93,14 @@ export default function OrdersListItem({ order }: OrdersListItemProps) {
   const handleDelete = async () => {
     if (
       !window.confirm(
-        `Are you sure you want to delete order #${order.orderNumber}? This action cannot be undone.`
+        `Are you sure you want to delete order #${order.OrderNumber}? This action cannot be undone.`
       )
     ) {
       return;
     }
 
     try {
-      await deleteOrder(order.id).unwrap();
+      await deleteOrder(order.Id).unwrap();
     } catch (error) {
       console.error("Failed to delete order:", error);
       alert("Failed to delete order. Please try again.");
@@ -116,7 +113,7 @@ export default function OrdersListItem({ order }: OrdersListItemProps) {
     <tr className={isLoading ? "opacity-50" : ""}>
       {/* Order Number */}
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-        #{order.orderNumber}
+        #{order.OrderNumber}
       </td>
 
       {/* Customer Name */}
@@ -124,14 +121,14 @@ export default function OrdersListItem({ order }: OrdersListItemProps) {
         className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 underline cursor-pointer hover:text-blue-600"
         onClick={toggleOrderUserPopup}
       >
-        {order.user
-          ? `${order.user.firstName} ${order.user.lastName}`
-          : `${order.shippingFirstName} ${order.shippingLastName}`}
+        {order.User
+          ? `${order.User.FirstName} ${order.User.LastName}`
+          : `${order.ShippingFirstName} ${order.ShippingLastName}`}
       </td>
 
       {/* Total Amount - This should now update when items change */}
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
-        ${order.totalAmount?.toFixed(2) || "0.00"}
+        ${order.TotalAmount?.toFixed(2) || "0.00"}
       </td>
 
       {/* Shipping Status Dropdown */}
@@ -191,14 +188,13 @@ export default function OrdersListItem({ order }: OrdersListItemProps) {
         </button>
       </td>
 
-      {/* Popups */}
       <OrderUserPopup
-        user={order?.user}
+        user={order?.User}
         isOpen={isOrderUserPopupOpen}
         toggleOrderUserPopup={toggleOrderUserPopup}
       />
       <OrdersItemsPopup
-        orderId={order.id}
+        orderId={order.Id}
         isOpen={isOrdersItemsPopupOpen}
         toggleOrderItemsPopup={toggleOrderItemsPopup}
       />

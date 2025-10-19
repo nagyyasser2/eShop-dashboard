@@ -1,13 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type {
-  Product,
-  Order,
-  Customer,
-  DashboardStats,
-  User,
-} from "../../types";
+import type { ApplicationUser, AuthResponse } from "../../types/auth.types";
+import type { DashboardStats } from "../../types/dashboard.types";
 
 import { API_BASE_URL } from "../../utils/constants";
+import type { Product } from "../../types/products.types";
+import type { Order } from "../../types/orders.types";
 
 export const eshopApi = createApi({
   reducerPath: "eshopApi",
@@ -23,10 +20,7 @@ export const eshopApi = createApi({
   }),
   tagTypes: ["Product", "Order", "Customer", "Auth"],
   endpoints: (builder) => ({
-    login: builder.mutation<
-      { data: { token: string; user: any } },
-      { email: string; password: string }
-    >({
+    login: builder.mutation<AuthResponse, { Email: string; Password: string }>({
       query: (credentials) => ({
         url: "Auth/login",
         method: "POST",
@@ -34,15 +28,16 @@ export const eshopApi = createApi({
       }),
       invalidatesTags: ["Auth"],
     }),
+
     register: builder.mutation<
-      User,
+      ApplicationUser,
       {
-        firstName: string;
-        lastName: string;
-        email: string;
-        password: string;
-        confirmPassword: string;
-        dateOfBirth: string;
+        FirstName: string;
+        LastName: string;
+        Email: string;
+        Password: string;
+        ConfirmPassword: string;
+        DateOfBirth: string;
       }
     >({
       query: (userData) => ({
@@ -51,7 +46,7 @@ export const eshopApi = createApi({
         body: userData,
       }),
     }),
-    getUser: builder.query<User, void>({
+    getUser: builder.query<ApplicationUser, void>({
       query: () => "auth/profile",
       providesTags: ["Auth"],
     }),
@@ -74,7 +69,7 @@ export const eshopApi = createApi({
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ id }) => ({ type: "Product" as const, id })),
+              ...result.map(({ Id }) => ({ type: "Product" as const, id: Id })),
               "Product",
             ]
           : ["Product"],
@@ -99,7 +94,7 @@ export const eshopApi = createApi({
     }),
 
     // Customer endpoints
-    getCustomers: builder.query<Customer[], void>({
+    getCustomers: builder.query<ApplicationUser[], void>({
       query: () => "customers",
       providesTags: ["Customer"],
     }),

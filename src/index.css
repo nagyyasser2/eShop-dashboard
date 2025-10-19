@@ -2,8 +2,6 @@
 @import 'react-toastify/dist/ReactToastify.css';
 
 body {
-  overflow: hidden;
-  height: 100vh;
   max-width: 1950px;
   margin: 0 auto;
 }

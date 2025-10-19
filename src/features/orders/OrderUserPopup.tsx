@@ -59,23 +59,23 @@ export default function OrderUserPopup({
           <div className="space-y-4">
             <p className="text-sm text-gray-700">
               <span className="font-medium">User ID:</span>{" "}
-              {user?.id || "Not available"}
+              {user?.Id || "Not available"}
             </p>
             <p className="text-sm text-gray-700">
               <span className="font-medium">Email:</span>{" "}
-              {user?.email || "Not available"}
+              {user?.Email || "Not available"}
             </p>
             <p className="text-sm text-gray-700">
               <span className="font-medium">First Name:</span>{" "}
-              {user?.firstName || "Not available"}
+              {user?.FirstName || "Not available"}
             </p>
             <p className="text-sm text-gray-700">
               <span className="font-medium">Last Name:</span>{" "}
-              {user?.lastName || "Not available"}
+              {user?.LastName || "Not available"}
             </p>
             <p className="text-sm text-gray-700">
               <span className="font-medium">Address:</span>{" "}
-              {user?.address || "Not available"}
+              {user?.Address || "Not available"}
             </p>
           </div>
         </div>

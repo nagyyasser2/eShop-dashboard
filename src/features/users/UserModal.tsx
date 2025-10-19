@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import {
   useAssignRolesMutation,
   useRemoveRoleMutation,
-  type UserDto,
 } from "../../app/api/usersApi";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import type { ApplicationUser } from "../../types/auth.types";
 
 interface UserModalProps {
-  user: UserDto;
+  user: ApplicationUser;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -22,14 +22,14 @@ const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const availableRolesToAdd = AVAILABLE_ROLES.filter(
-    (role) => !user.roles.includes(role)
+    (role) => !user.Roles.includes(role)
   );
 
   const handleAssignRoles = async () => {
     if (selectedRoles.length === 0) return;
 
     try {
-      await assignRoles({ id: user.id, roles: selectedRoles }).unwrap();
+      await assignRoles({ id: user.Id, roles: selectedRoles }).unwrap();
       setSelectedRoles([]);
       alert("Roles assigned successfully");
     } catch (error) {
@@ -44,7 +44,7 @@ const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) => {
     }
 
     try {
-      await removeRole({ id: user.id, roleName }).unwrap();
+      await removeRole({ id: user.Id, roleName }).unwrap();
     } catch (error) {
       console.error("Failed to remove role:", error);
       alert("Failed to remove role. Please try again.");
@@ -85,21 +85,21 @@ const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) => {
               <label className="block text-sm font-medium text-gray-700">
                 Name
               </label>
-              <p className="mt-1 text-sm text-gray-900">{user.firstName}</p>
+              <p className="mt-1 text-sm text-gray-900">{user.FirstName}</p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Email
               </label>
-              <p className="mt-1 text-sm text-gray-900">{user.email}</p>
+              <p className="mt-1 text-sm text-gray-900">{user.Email}</p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 User ID
               </label>
-              <p className="mt-1 text-sm text-gray-500 font-mono">{user.id}</p>
+              <p className="mt-1 text-sm text-gray-500 font-mono">{user.Id}</p>
             </div>
 
             <div>
@@ -108,12 +108,12 @@ const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) => {
               </label>
               <span
                 className={`mt-1 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                  user.emailConfirmed
+                  user.EmailConfirmed
                     ? "bg-green-100 text-green-800"
                     : "bg-yellow-100 text-yellow-800"
                 }`}
               >
-                {user.emailConfirmed ? "Verified" : "Unverified"}
+                {user.EmailConfirmed ? "Verified" : "Unverified"}
               </span>
             </div>
           </div>
@@ -124,8 +124,8 @@ const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) => {
               Current Roles
             </label>
             <div className="flex flex-wrap gap-2">
-              {user.roles.length > 0 ? (
-                user.roles.map((role) => (
+              {user.Roles.length > 0 ? (
+                user.Roles.map((role) => (
                   <div
                     key={role}
                     className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-800 rounded-full"

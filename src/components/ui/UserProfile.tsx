@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
-import type { User } from "../../types";
 import { useLogoutMutation } from "../../app/api/eshopApi";
+import type { ApplicationUser } from "../../types/auth.types";
 
 interface UserProfileProps {
-  user: User | null;
+  user: ApplicationUser | null;
 }
 
 const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
@@ -61,10 +61,10 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
         <img
           className="h-10 w-10 rounded-full cursor-pointer hover:ring-2 hover:ring-blue-300 transition-all duration-200"
           src={
-            user.profilePictureUrl ||
-            `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random`
+            user.ProfilePictureUrl ||
+            `https://ui-avatars.com/api/?name=${user.FirstName}+${user.LastName}&background=random`
           }
-          alt={`${user.firstName} ${user.lastName}`}
+          alt={`${user.FirstName} ${user.LastName}`}
         />
       </button>
 
@@ -78,16 +78,16 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
                 <img
                   className="h-8 w-8 rounded-full"
                   src={
-                    user.profilePictureUrl ||
-                    `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random`
+                    user.ProfilePictureUrl ||
+                    `https://ui-avatars.com/api/?name=${user.FirstName}+${user.LastName}&background=random`
                   }
-                  alt={`${user.firstName} ${user.lastName}`}
+                  alt={`${user.FirstName} ${user.LastName}`}
                 />
                 <div>
                   <p className="text-sm font-medium text-gray-900">
-                    {user.firstName} {user.lastName}
+                    {user.FirstName} {user.LastName}
                   </p>
-                  <p className="text-xs text-gray-500">{user.role}</p>
+                  <p className="text-xs text-gray-500">{user?.Roles}</p>
                 </div>
               </div>
             </div>

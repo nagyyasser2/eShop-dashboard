@@ -1,4 +1,5 @@
-import { PaymentStatus, ShippingStatus } from "../../types/orders.types";
+import { ShippingStatus } from "../../types/orders.types";
+import { PaymentStatus } from "../../types/payments.types";
 
 const getShippingStatusString = (
   numericStatus: number | string

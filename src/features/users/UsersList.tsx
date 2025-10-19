@@ -2,20 +2,25 @@ import React, { useState } from "react";
 import { useGetUsersQuery } from "../../app/api/usersApi";
 import UsersListItem from "./UsersListItem";
 import UserModal from "./UserModal";
-import type { UserDto } from "../../app/api/usersApi";
+import type { ApplicationUser } from "../../types/auth.types";
 
 interface UsersListProps {
-  onUserSelect?: (user: UserDto) => void;
+  onUserSelect?: (user: ApplicationUser) => void;
 }
 
 const UsersList: React.FC<UsersListProps> = ({ onUserSelect }) => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
-  const { data, isLoading, error } = useGetUsersQuery({ page, pageSize });
-  const [selectedUser, setSelectedUser] = useState<UserDto | null>(null);
+  const { data, isLoading, error } = useGetUsersQuery({
+    Page: page,
+    PageSize: pageSize,
+  });
+  const [selectedUser, setSelectedUser] = useState<ApplicationUser | null>(
+    null
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleViewUser = (user: UserDto) => {
+  const handleViewUser = (user: ApplicationUser) => {
     setSelectedUser(user);
     setIsModalOpen(true);
     onUserSelect?.(user);
@@ -26,7 +31,7 @@ const UsersList: React.FC<UsersListProps> = ({ onUserSelect }) => {
     setSelectedUser(null);
   };
 
-  const totalPages = data ? Math.ceil(data.totalCount / pageSize) : 0;
+  const totalPages = data ? Math.ceil(data.TotalCount / pageSize) : 0;
 
   if (isLoading) {
     return (
@@ -44,7 +49,7 @@ const UsersList: React.FC<UsersListProps> = ({ onUserSelect }) => {
     );
   }
 
-  if (!data || data.users.length === 0) {
+  if (!data || data.Users.length === 0) {
     return (
       <div className="text-center py-12 text-gray-500">No users found.</div>
     );
@@ -74,9 +79,9 @@ const UsersList: React.FC<UsersListProps> = ({ onUserSelect }) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {data.users.map((user) => (
+            {data.Users.map((user) => (
               <UsersListItem
-                key={user.id}
+                key={user.Id}
                 user={user}
                 onView={handleViewUser}
               />
@@ -111,9 +116,9 @@ const UsersList: React.FC<UsersListProps> = ({ onUserSelect }) => {
                 <span className="font-medium">{(page - 1) * pageSize + 1}</span>{" "}
                 to{" "}
                 <span className="font-medium">
-                  {Math.min(page * pageSize, data.totalCount)}
+                  {Math.min(page * pageSize, data.TotalCount)}
                 </span>{" "}
-                of <span className="font-medium">{data.totalCount}</span>{" "}
+                of <span className="font-medium">{data.TotalCount}</span>{" "}
                 results
               </p>
             </div>

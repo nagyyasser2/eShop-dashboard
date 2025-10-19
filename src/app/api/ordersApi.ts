@@ -31,10 +31,10 @@ export const ordersApi = createApi({
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ id }) => ({ type: "Order" as const, id })),
-              { type: "Order", id: "LIST" },
+              ...result.map(({ Id }) => ({ type: "Order" as const, Id })),
+              { type: "Order", Id: "LIST" },
             ]
-          : [{ type: "Order", id: "LIST" }],
+          : [{ type: "Order", Id: "LIST" }],
     }),
 
     /**
@@ -43,14 +43,11 @@ export const ordersApi = createApi({
     getOrderById: builder.query<Order, number>({
       query: (id) => `orders/${id}`,
       providesTags: (result, error, id) => [
-        { type: "Order", id },
-        { type: "Order", id: "LIST" },
+        { type: "Order", Id: id },
+        { type: "Order", Id: "LIST" },
       ],
     }),
 
-    /**
-     * Update order status
-     */
     updateOrderStatus: builder.mutation<
       Order,
       { id: number; shippingStatus: string; paymentStatus: string }
@@ -60,8 +57,8 @@ export const ordersApi = createApi({
         method: "PUT",
       }),
       invalidatesTags: (result, error, { id }) => [
-        { type: "Order", id },
-        { type: "Order", id: "LIST" },
+        { type: "Order", Id: id }, // Changed from 'id' to 'Id'
+        { type: "Order", Id: "LIST" },
       ],
     }),
 
@@ -74,8 +71,8 @@ export const ordersApi = createApi({
         method: "DELETE",
       }),
       invalidatesTags: (result, error, id) => [
-        { type: "Order", id },
-        { type: "Order", id: "LIST" },
+        { type: "Order", Id: id }, // Changed from 'id' to 'Id' to match your tags
+        { type: "Order", Id: "LIST" },
       ],
     }),
 
@@ -91,9 +88,9 @@ export const ordersApi = createApi({
         body: orderItemDto,
       }),
       invalidatesTags: (result, error, arg) => [
-        { type: "OrderItem", id: "LIST" },
-        { type: "Order", id: arg.orderId },
-        { type: "Order", id: "LIST" },
+        { type: "OrderItem", Id: "LIST" },
+        { type: "Order", Id: arg.OrderId },
+        { type: "Order", Id: "LIST" },
       ],
     }),
 
@@ -102,7 +99,7 @@ export const ordersApi = createApi({
      */
     getOrderItemById: builder.query<OrderItem, number>({
       query: (id) => `orderitems/${id}`,
-      providesTags: (result, error, id) => [{ type: "OrderItem", id }],
+      providesTags: (result, error, id) => [{ type: "OrderItem", Id: id }],
     }),
 
     /**
@@ -111,11 +108,11 @@ export const ordersApi = createApi({
     getOrderItemsByOrderId: builder.query<OrderItem[], number>({
       query: (orderId) => `orderitems/order/${orderId}`,
       providesTags: (result, error, orderId) => [
-        ...(result?.map(({ id }) => ({ type: "OrderItem" as const, id })) ??
+        ...(result?.map(({ Id }) => ({ type: "OrderItem" as const, Id })) ??
           []),
-        { type: "OrderItem", id: "LIST" },
-        { type: "OrderItem", id: `ORDER_${orderId}` },
-        { type: "Order", id: orderId }, // Also provide the order tag
+        { type: "OrderItem", Id: "LIST" },
+        { type: "OrderItem", Id: `ORDER_${orderId}` },
+        { type: "Order", Id: orderId }, // Also provide the order tag
       ],
     }),
 
@@ -129,11 +126,8 @@ export const ordersApi = createApi({
         body: updateOrderItemDto,
       }),
       invalidatesTags: (result, error, arg) => [
-        { type: "OrderItem", id: arg.id },
-        { type: "OrderItem", id: "LIST" },
-        { type: "OrderItem", id: `ORDER_${arg.orderId}` },
-        { type: "Order", id: arg.orderId }, // This will now properly invalidate the order
-        { type: "Order", id: "LIST" },
+        { type: "OrderItem", Id: arg.Id },
+        { type: "Order", Id: arg.OrderId },
       ],
     }),
 
@@ -146,11 +140,11 @@ export const ordersApi = createApi({
         method: "DELETE",
       }),
       invalidatesTags: (result, error, { id, orderId }) => [
-        { type: "OrderItem", id },
-        { type: "OrderItem", id: "LIST" },
-        { type: "OrderItem", id: `ORDER_${orderId}` },
-        { type: "Order", id: orderId }, // This will now properly invalidate the order
-        { type: "Order", id: "LIST" },
+        { type: "OrderItem", Id: id },
+        { type: "OrderItem", Id: "LIST" },
+        { type: "OrderItem", Id: `ORDER_${orderId}` },
+        { type: "Order", Id: orderId },
+        { type: "Order", Id: "LIST" },
       ],
     }),
   }),

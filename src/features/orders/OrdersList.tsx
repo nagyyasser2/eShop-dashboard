@@ -64,7 +64,7 @@ export default function OrdersList() {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {data.map((order) => (
-            <OrdersListItem key={order.id} order={order} />
+            <OrdersListItem key={order.Id} order={order} />
           ))}
         </tbody>
       </table>

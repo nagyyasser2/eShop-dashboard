@@ -10,6 +10,7 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
+
   const [register, { isLoading }] = useRegisterMutation();
   const navigate = useNavigate();
 
@@ -17,13 +18,14 @@ const Register: React.FC = () => {
     e.preventDefault();
     try {
       await register({
-        firstName,
-        lastName,
-        email,
-        password,
-        confirmPassword,
-        dateOfBirth: new Date(dateOfBirth).toISOString(), // Convert to ISO string for backend
+        FirstName: firstName,
+        LastName: lastName,
+        Email: email,
+        Password: password,
+        ConfirmPassword: confirmPassword,
+        DateOfBirth: new Date(dateOfBirth).toISOString(), // ✅ formatted for backend
       }).unwrap();
+
       navigate("/login");
     } catch (err) {
       console.error("Registration failed:", err);
@@ -44,6 +46,7 @@ const Register: React.FC = () => {
         </div>
         <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
           <form className="space-y-4" onSubmit={handleSubmit}>
+            {/* First Name */}
             <div>
               <label
                 htmlFor="firstName"
@@ -56,7 +59,6 @@ const Register: React.FC = () => {
                   id="firstName"
                   name="firstName"
                   type="text"
-                  autoComplete="given-name"
                   required
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
@@ -65,6 +67,8 @@ const Register: React.FC = () => {
                 />
               </div>
             </div>
+
+            {/* Last Name */}
             <div>
               <label
                 htmlFor="lastName"
@@ -77,7 +81,6 @@ const Register: React.FC = () => {
                   id="lastName"
                   name="lastName"
                   type="text"
-                  autoComplete="family-name"
                   required
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
@@ -86,6 +89,8 @@ const Register: React.FC = () => {
                 />
               </div>
             </div>
+
+            {/* Email */}
             <div>
               <label
                 htmlFor="email"
@@ -98,7 +103,6 @@ const Register: React.FC = () => {
                   id="email"
                   name="email"
                   type="email"
-                  autoComplete="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -106,6 +110,8 @@ const Register: React.FC = () => {
                 />
               </div>
             </div>
+
+            {/* Password */}
             <div>
               <label
                 htmlFor="password"
@@ -118,7 +124,6 @@ const Register: React.FC = () => {
                   id="password"
                   name="password"
                   type="password"
-                  autoComplete="new-password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -128,6 +133,8 @@ const Register: React.FC = () => {
                 />
               </div>
             </div>
+
+            {/* Confirm Password */}
             <div>
               <label
                 htmlFor="confirmPassword"
@@ -140,7 +147,6 @@ const Register: React.FC = () => {
                   id="confirmPassword"
                   name="confirmPassword"
                   type="password"
-                  autoComplete="new-password"
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -150,6 +156,8 @@ const Register: React.FC = () => {
                 />
               </div>
             </div>
+
+            {/* Date of Birth */}
             <div>
               <label
                 htmlFor="dateOfBirth"
@@ -169,6 +177,8 @@ const Register: React.FC = () => {
                 />
               </div>
             </div>
+
+            {/* Submit */}
             <div>
               <button
                 type="submit"

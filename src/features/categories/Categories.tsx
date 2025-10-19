@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TagIcon } from "@heroicons/react/24/outline";
-import CategoriesList from "./components/CategoriesList";
-import CategoryFormModal from "./components/CategoryFormModal";
+import CategoriesList from "./CategoriesList";
+import CategoryFormModal from "./CategoryFormModal";
 
 const Categories: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,9 +23,9 @@ const Categories: React.FC = () => {
           <div className="ml-auto">
             <button
               onClick={openModal}
-              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-200 cursor-pointer"
+              className="inline-block text-center bg-green-600 font-normal text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200 cursor-pointer"
             >
-              + Add
+              + New
             </button>
           </div>
         </div>

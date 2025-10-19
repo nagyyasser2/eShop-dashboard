@@ -1,6 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { User } from "../../types";
 import { API_BASE_URL } from "../../utils/constants";
+import type {
+  ApiResponse,
+  ApplicationUser,
+  AuthResponse,
+} from "../../types/auth.types";
 
 export const authApi = createApi({
   reducerPath: "authApi",
@@ -16,10 +20,8 @@ export const authApi = createApi({
   }),
   tagTypes: ["Auth"],
   endpoints: (builder) => ({
-    login: builder.mutation<
-      { data: { token: string; user: any } },
-      { email: string; password: string }
-    >({
+    // LOGIN
+    login: builder.mutation<AuthResponse, { Email: string; Password: string }>({
       query: (credentials) => ({
         url: "Auth/login",
         method: "POST",
@@ -27,15 +29,17 @@ export const authApi = createApi({
       }),
       invalidatesTags: ["Auth"],
     }),
+
+    // REGISTER
     register: builder.mutation<
-      User,
+      AuthResponse,
       {
-        firstName: string;
-        lastName: string;
-        email: string;
-        password: string;
-        confirmPassword: string;
-        dateOfBirth: string;
+        FirstName: string;
+        LastName: string;
+        Email: string;
+        Password: string;
+        ConfirmPassword: string;
+        DateOfBirth: string;
       }
     >({
       query: (userData) => ({
@@ -44,13 +48,20 @@ export const authApi = createApi({
         body: userData,
       }),
     }),
-    getUser: builder.query<User, void>({
-      query: () => "auth/profile",
+
+    // GET USER PROFILE
+    getUser: builder.query<ApplicationUser, void>({
+      query: () => "Auth/profile",
+      // ✅ Transform the API response to extract just the Data
+      transformResponse: (response: ApiResponse<ApplicationUser>) =>
+        response.Data,
       providesTags: ["Auth"],
     }),
+
+    // LOGOUT
     logout: builder.mutation<void, void>({
       query: () => ({
-        url: "auth/logout",
+        url: "Auth/logout",
         method: "POST",
       }),
       invalidatesTags: ["Auth"],

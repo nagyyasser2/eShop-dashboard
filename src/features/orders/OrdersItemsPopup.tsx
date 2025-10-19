@@ -76,7 +76,7 @@ export default function OrdersItemsPopup({
           {orderItems && (
             <ul className="space-y-4">
               {orderItems.map((item) => (
-                <OrdersItemsListItem key={item.id} item={item} />
+                <OrdersItemsListItem key={item.Id} item={item} />
               ))}
             </ul>
           )}

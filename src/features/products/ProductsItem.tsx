@@ -1,22 +1,25 @@
 import { Link } from "react-router-dom";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { useDeleteProductMutation } from "../../../app/api/productsApi";
+import { useDeleteProductMutation } from "../../app/api/productsApi";
+import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import type { ProductDto } from "../../../types";
+import type { ProductDto } from "../../types/products.types";
+import { setCurrentProduct } from "./productsSlice";
 
 interface ProductItemProps {
   product: ProductDto;
 }
 
 const ProductsItem = ({ product }: ProductItemProps) => {
+  const dispatch = useDispatch();
   const [deleteProduct, { isLoading, error }] = useDeleteProductMutation();
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const handleDelete = async () => {
-    if (window.confirm(`Are you sure you want to delete ${product.name}?`)) {
+    if (window.confirm(`Are you sure you want to delete ${product.Name}?`)) {
       try {
-        await deleteProduct(product.id).unwrap();
+        await deleteProduct(product.Id).unwrap();
         setDeleteError(null);
         toast.success("Product deleted successfuly.");
       } catch (err) {
@@ -29,18 +32,20 @@ const ProductsItem = ({ product }: ProductItemProps) => {
   return (
     <tr>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-        <Link
-          to={`/products/${product.id}/edit`}
-          className="hover:text-blue-600"
-        >
-          {product.name}
-        </Link>
+        <button onClick={() => dispatch(setCurrentProduct(product))}>
+          <Link
+            to={`/products/${product.Id}/edit`}
+            className="hover:text-blue-600"
+          >
+            {product.Name}
+          </Link>
+        </button>
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-        ${product.price.toFixed(2)}
+        ${product.Price?.toFixed(2)}
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-        {product.stockQuantity}
+        {product.StockQuantity}
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm">
         <button

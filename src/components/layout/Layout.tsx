@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import ShowMenuIcon from "../ui/ShowMenuIcon";
 import { useAppSelector } from "../../app/hooks";
-import NotificationIcon from "../ui/NotificationIcon";
-import UserProfile from "../ui/UserProfile";
+import Header from "./Header";
 
 const Layout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const { user } = useAppSelector((state) => state.auth);
+  const { User } = useAppSelector((state) => state.auth);
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
+  };
+
+  const closeSidebar = () => {
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
   };
 
   useEffect(() => {
@@ -20,56 +24,56 @@ const Layout: React.FC = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
 
+      // Auto-close sidebar on mobile, auto-open on desktop
       if (mobile) {
-        // On mobile: close sidebar when switching to mobile if it's open
-        if (sidebarOpen) {
-          setSidebarOpen(false);
-        }
+        setSidebarOpen(false);
       } else {
-        // On desktop: always show sidebar by default when resizing to desktop
-        // But don't force it open if user explicitly closed it
-        // You can choose to always open it on desktop or keep user's preference
-        // setSidebarOpen(true); // Uncomment this if you want sidebar to always open when switching to desktop
+        setSidebarOpen(true);
       }
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [sidebarOpen]);
+  }, []);
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <Sidebar isOpen={sidebarOpen} user={user} toggleSidebar={toggleSidebar} />
+      <div
+        className={`${
+          isMobile
+            ? `fixed inset-y-0 left-0 z-30 w-64 bg-white transform transition-transform duration-300 ease-in-out ${
+                sidebarOpen ? "translate-x-0" : "-translate-x-full"
+              }`
+            : `sticky top-0 h-screen flex-shrink-0 w-64 bg-white z-20 ${
+                sidebarOpen ? "block" : "hidden"
+              }`
+        }`}
+      >
+        <Sidebar
+          isOpen={sidebarOpen}
+          user={User}
+          toggleSidebar={toggleSidebar}
+        />
+      </div>
 
       {/* Overlay (mobile only) */}
       {sidebarOpen && isMobile && (
         <div
-          className="fixed inset-0 backdrop-blur-md backdrop-brightness-125 z-20 md:hidden"
-          onClick={toggleSidebar}
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"
+          onClick={closeSidebar}
         />
       )}
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <div
-        className={`flex-1 flex flex-col overflow-hidden max-h-screen transition-all duration-300 ${
+        className={`flex-1 flex flex-col min-h-screen ${
           !sidebarOpen && !isMobile ? "w-full" : ""
         }`}
       >
-        <header className="flex items-center justify-between bg-white px-5 py-3 ">
-          <div className="flex items-center gap-4">
-            <ShowMenuIcon toggleSidebar={toggleSidebar} />
-          </div>
-          <div>
-            {user && (
-              <div className="flex items-center space-x-4">
-                <NotificationIcon />
-                <UserProfile user={user} />
-              </div>
-            )}
-          </div>
-        </header>
-        <main className="flex-1 w-full mx-auto py-4 px-6">
+        <Header toggleSidebar={toggleSidebar} User={User} />
+
+        <main className="flex-1 overflow-y-auto px-6 py-4">
           <Outlet />
         </main>
       </div>
